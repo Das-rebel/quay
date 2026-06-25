@@ -1,0 +1,45 @@
+project: a3m-router-research
+question: "How can A3M Router improve its LLM routing accuracy and cost-efficiency beyond current RouterArena leaders (Sqwish 75.27, AgentForge 74.13)?"
+created: 2026-06-15
+status: bootstrap_complete
+
+objectives:
+  - "Find latest ML innovations for LLM routing"
+  - "Identify MCTS, RL, or other advanced approaches"
+  - "Design improvements to A3M architecture"
+  - "Submit to RouterArena official evaluation"
+
+current_loop: inner_loop
+inner_loop_count: 0
+outer_loop_count: 0
+
+key_findings:
+  - paper: "Router-R1 (2506.09033)"
+    innovation: "RL-based multi-round routing with think-route-aggregate loop"
+    relevance: "Extends A3M parallel ensemble to iterative refinement"
+    priority: P0
+    
+  - paper: "ReCal (2606.12479)"  
+    innovation: "Reward calibration for RL router training"
+    relevance: "Improves router training by addressing reward noise"
+    priority: P1
+    
+  - paper: "MTRouter (2604.23530)"
+    innovation: "Multi-turn routing with history-model embeddings"
+    relevance: "Critical for WhatsApp/Telegram conversational use"
+    priority: P1
+    
+  - paper: "SeqRoute (2605.25424)"
+    innovation: "Budget-aware sequential routing via offline RL"
+    relevance: "Long-horizon budget optimization for A3M"
+    priority: P2
+    
+  - paper: "CARROT (2502.03261)"
+    innovation: "Cost-aware rate optimal router"
+    relevance: "Most comparable to A3M goals"
+    priority: P2
+
+research_gaps:
+  - "MCTS for routing: No papers found - open research opportunity"
+  - "Sqwish/AgentForge: Not on arXiv - likely proprietary"
+  - "Offline RL for routing: Emerging area (SeqRoute)"
