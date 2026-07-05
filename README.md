@@ -56,6 +56,7 @@
 
 Quay sits at the intersection of **enterprise capability** and **open-source flexibility** — self-hosted, cost-transparent, and built for teams that want full control without building from scratch.
 
+
 ### How to Read the Table
 
 | Symbol | Meaning |
@@ -66,40 +67,40 @@ Quay sits at the intersection of **enterprise capability** and **open-source fle
 
 ### Platform Comparison
 
-| Platform | Type | Deployment | Pricing | LLM Flexibility | MCP Support | Cost Transparency | Real-time Dashboard | Task State Machine | Audit Trail | Autonomous Coding | Pipeline Customization | Multi-Agent | Open Source |
-|---------|------|-----------|---------|----------------|------------|-----------------|-------------------|-------------------|-------------|-----------------|----------------------|-------------|------------|
-| **Quay** | AI Software Factory | ✅ Self-hosted | ✅ Open (MIT) | ✅ Any (A3M, 40+ providers) | ✅ Native | ✅ Per-call USD logging | ✅ Live SSE + Kanban | ✅ 7-state machine | ✅ Full SQLite | ✅ Production | ✅ Full (any stage) | ✅ Role-based | ✅ MIT |
-| **XHawk OpenFactory** | AI Software Factory | ❌ Cloud-only | ⚠️ Enterprise (opaque) | ⚠️ Proprietary | ❌ | ❌ Opaque | ⚠️ Dashboard | ⚠️ Basic | ⚠️ Logs | ✅ Production | ⚠️ Configurable | ⚠️ Multi-agent | ❌ Proprietary |
-| **ServiceNow AI Agents** | Enterprise Workflow | ❌ Cloud-only | ⚠️ Enterprise (opaque) | ⚠️ Proprietary | ⚠️ Via integration | ⚠️ Aggregate | ⚠️ Now Platform UI | ✅ Full | ✅ Full | ⚠️ Task automation | ⚠️ Flow Designer | ⚠️ Virtual Agent | ❌ Proprietary |
-| **Microsoft Copilot Studio** | Enterprise AI Agents | ❌ Cloud-only | ⚠️ Per-seat (opaque) | ⚠️ Copilot (GPT-4) | ⚠️ Via connectors | ⚠️ Admin reports | ✅ Power Platform | ✅ Topic flows | ✅ Full | ⚠️ Prompt-based | ⚠️ Copilot Studio | ⚠️ Power Automate | ❌ Proprietary |
-| **Salesforce Einstein Agent** | CRM AI Agents | ❌ Cloud-only | ⚠️ Per-agent (opaque) | ⚠️ Einstein LLM | ⚠️ Salesforce APIs | ⚠️ CRM reports | ⚠️ Salesforce UI | ⚠️ Case/status | ✅ Full | ⚠️ Case automation | ⚠️ Flow Builder | ⚠️ Einstein | ❌ Proprietary |
-| **Workato** | Enterprise iPaaS + AI | ⚠️ Cloud + on-prem | ⚠️ Per-automation | ⚠️ Workato LLM | ⚠️ Connectors (200+) | ⚠️ Connector logs | ⚠️ Workbot/Reports | ⚠️ Job status | ✅ Full | ⚠️ Recipe automation | ⚠️ Low-code | ⚠️ Recipe-based | ⚠️ Source-available |
-| **Automation Anywhere** | RPA + AI Agents | ✅ On-prem + cloud | ⚠️ Bot-based (opaque) | ⚠️Bot Insight LLM | ⚠️ Integration | ⚠️ Bot analytics | ⚠️ Control Room | ⚠️ Attended/Unattended | ✅ Full | ⚠️ Attended automation | ⚠️ RPA workflows | ⚠️ RPA-based | ❌ Proprietary |
-| **MultiOn** | Autonomous Browser AI | ❌ Cloud + API | ⚠️ API + per-seat | ✅ Any OpenAI/Anthropic | ❌ | ⚠️ API costs only | ⚠️ API dashboard | ⚠️ Basic state | ❌ | ⚠️ Browser tasks | ⚠️ Browser automation | ❌ | ⚠️ Freemium API |
-| **Adept ACT-1** | Enterprise AI Agent | ❌ Cloud-only | ⚠️ Enterprise (opaque) | ✅ Any provider | ❌ | ❌ Opaque | ⚠️ Enterprise portal | ⚠️ Task-based | ⚠️ Enterprise | ⚠️ Multimodal | ⚠️ ACT-1 config | ⚠️ Enterprise | ❌ Proprietary |
-| **Airkit** | No-code AI Agents | ❌ Cloud-only | ⚠️ Per-seat (opaque) | ⚠️ Airkit LLM | ❌ | ⚠️ Contact center | ⚠️ Airkit Studio | ⚠️ Bot flows | ⚠️ Session logs | ❌ No autonomous coding | ⚠️ Bot Builder | ❌ | ⚠️ Freemium |
-| **Embra** | Knowledge Work AI | ❌ Cloud-only | ⚠️ Per-seat (opaque) | ✅ Claude, GPT-4, others | ❌ | ❌ Opaque | ⚠️ Embra workspace | ❌ | ⚠️ Activity logs | ⚠️ Knowledge tasks | ❌ | ❌ | ⚠️ Freemium |
-| **Corr** | Autonomous AI Agents | ❌ Cloud-only | ⚠️ Per-seat (opaque) | ✅ Multi-provider | ⚠️ Roadmap | ❌ Opaque | ⚠️ Dashboard | ⚠️ Task queues | ⚠️ Basic | ⚠️ General autonomy | ⚠️ Agent config | ⚠️ Multi-agent | ⚠️ Closed-beta |
-| **Superagent** | Open Source Agent | ✅ Self-hosted | ✅ Open (MIT) | ✅ Any provider | ⚠️ Via tools | ⚠️ Depends on backend | ⚠️ LangSmith/other | ⚠️ Custom | ⚠️ Custom | ⚠️ Tool orchestration | ⚠️ Superagent config | ⚠️ Single agent | ✅ MIT |
-| **Jina AI** | Agent Infrastructure | ⚠️ Cloud + API | ⚠️ Per-call (pro) | ✅ Any via API | ⚠️ Reader/proxy | ⚠️ Pro API billing | ⚠️ Dashboard | ❌ | ⚠️ API logs | ⚠️ Reader/scraper | ⚠️ Jina services | ⚠️ Reader agent | ⚠️ Partial open |
-| **MindOS** | AI Agent Platform | ❌ Cloud-only | ⚠️ Subscription | ⚠️ MindOS LLM | ⚠️ Plugins | ❌ Opaque | ✅ MindOS portal | ⚠️ Agent states | ⚠️ Session logs | ⚠️ Knowledge agents | ⚠️ Agent builder | ⚠️ Multi-agent | ⚠️ Freemium |
-| **AutoGen** | Agent Framework | ✅ Self-hosted | ✅ Open (MIT) | ✅ Any provider | ⚠️ Via custom tools | ❌ None | ❌ | ❌ | ⚠️ Console logs | ⚠️ Research grade | ⚠️ Code-based | ⚠️ Conversational | ✅ MIT |
-| **CrewAI** | Multi-Agent Orchestration | ✅ Self-hosted | ✅ Open (MIT) | ✅ Any provider | ⚠️ Via tools | ⚠️ Via LangSmith | ⚠️ LangSmith/other | ⚠️ Crew state | ⚠️ LangSmith traces | ⚠️ Role-based | ⚠️ YAML config | ⚠️ Role agents | ⚠️ Crew agents | ✅ MIT |
-| **LangGraph** | Agent Workflow Engine | ✅ Self-hosted | ✅ Open (Apache 2.0) | ✅ Any provider | ⚠️ Via LangChain | ⚠️ Via LangSmith | ⚠️ LangSmith | ⚠️ Checkpoint state | ⚠️ LangSmith | ⚠️ Workflows | ⚠️ Graph API | ⚠️ Graph nodes | ⚠️ Graph-based | ✅ Apache 2.0 |
-| **MetaGPT** | Autonomous Dev Agents | ✅ Self-hosted | ✅ Open (MIT) | ⚠️ GPT-4 / Claude | ❌ | ❌ None | ❌ | ❌ | ⚠️ Console logs | ⚠️ Research grade | ⚠️ Role-based | ⚠️ Single-prompt | ⚠️ Dev agents | ✅ MIT |
-| **OpenDevin** | Autonomous Coding Agent | ✅ Self-hosted | ✅ Open (AGPL) | ✅ Any provider | ⚠️ Via plugins | ❌ None | ⚠️ Web UI (basic) | ⚠️ Agent loop | ⚠️ Event traces | ⚠️ SWE tasks | ⚠️ AgentGarden | ⚠️ Event stream | ⚠️ Action agent | ⚠️ AGPL |
-| **SWE-agent** | SWE Task Agent | ✅ Self-hosted | ✅ Open (Apache 2.0) | ✅ Any provider | ❌ | ❌ None | ❌ CLI only | ❌ | ⚠️ Terminal logs | ⚠️ CLI tool | ⚠️ CLAUDE.md | ⚠️ Single agent | ⚠️ Bash tool | ✅ Apache 2.0 |
-| **Continue Dev** | AI Coding Assistant | ✅ Local-first | ✅ Open (Apache 2.0) | ✅ Any provider | ⚠️ Via config | ❌ None | ⚠️ IDE extension | ❌ | ⚠️ IDE traces | ⚠️ IDE autocomplete | ⚠️ IDE config | ⚠️ Pair programming | ❌ | ✅ Apache 2.0 |
-| **Moss** | Autonomous Coding Agent | ✅ Self-hosted | ✅ Open (MIT) | ✅ Any provider | ⚠️ Via tools | ❌ None | ⚠️ Web UI | ⚠️ Basic | ⚠️ Run history | ⚠️ General coding | ⚠️ Mission config | ⚠️ Mission agent | ⚠️ Mission-based | ✅ MIT |
+| Platform | Type | Deploy | Pricing | LLM Flex | MCP | Cost Transp | Dashboard | State Mach | Audit | Auto Code | Pipeline | Multi-Agent | Open Src |
+|---------|------|--------|---------|---------|-----|-----------|----------|----------|------|----------|----------|------------|---------|
+| [**Quay**](https://github.com/Das-rebel/quay) | Factory | ✅ Self | ✅ MIT | ✅ Any (40+) | ✅ Native | ✅ Per-call | ✅ Live SSE | ✅ 7-state | ✅ SQLite | ✅ Prod | ✅ Full | ✅ Role | ✅ MIT |
+| [**XHawk OpenFactory**](https://xhawk.ai) | Factory | ❌ Cloud | ⚠️ Opaque | ⚠️ Prop | ❌ | ❌ Opaque | ⚠️ Dash | ⚠️ Basic | ⚠️ Logs | ✅ Prod | ⚠️ Config | ⚠️ Multi | ❌ Prop |
+| [**ServiceNow AI Agents**](https://www.servicenow.com/products/ai-agents.html) | Enterprise | ❌ Cloud | ⚠️ Opaque | ⚠️ Prop | ⚠️ Integr | ⚠️ Agg | ⚠️ Now UI | ✅ Full | ✅ Full | ⚠️ Auto | ⚠️ Flow | ⚠️ Virt | ❌ Prop |
+| [**Copilot Studio**](https://www.microsoft.com/microsoft-copilot/microsoft-copilot-studio) | Enterprise | ❌ Cloud | ⚠️ Per-seat | ⚠️ Copilot | ⚠️ Conn | ⚠️ Admin | ✅ Power | ✅ Flows | ✅ Full | ⚠️ Prompt | ⚠️ Studio | ⚠️ Auto | ❌ Prop |
+| [**Einstein Agent**](https://www.salesforce.com/products/einstein/einstein-ai-agent/) | CRM | ❌ Cloud | ⚠️ Per-agent | ⚠️ Einst | ⚠️ APIs | ⚠️ CRM | ⚠️ SF UI | ⚠️ Case | ✅ Full | ⚠️ Case | ⚠️ Flow | ⚠️ Einst | ❌ Prop |
+| [**Workato**](https://www.workato.com) | iPaaS+AI | ⚠️ Hybrid | ⚠️ Per-job | ⚠️ Wkto | ⚠️ 200+ | ⚠️ Conn | ⚠️ Rpter | ⚠️ Job | ✅ Full | ⚠️ Recipe | ⚠️ Low | ⚠️ Recipe | ⚠️ Src |
+| [**Automation Anywhere**](https://www.automationanywhere.com) | RPA+AI | ⚠️ On-prem | ⚠️ Bot-met | ⚠️ Insight | ⚠️ Integr | ⚠️ Analytics | ⚠️ Room | ⚠️ Attended | ✅ Full | ⚠️ Attend | ⚠️ RPA | ⚠️ RPA | ❌ Prop |
+| [**MultiOn**](https://multion.ai) | Browser AI | ❌ Cloud | ⚠️ API | ✅ Any | ❌ | ⚠️ API | ⚠️ API | ⚠️ Basic | ❌ | ⚠️ Browser | ⚠️ Browser | ❌ | ⚠️ Freem |
+| [**Adept ACT-1**](https://www.adept.ai/act) | Ent AI | ❌ Cloud | ⚠️ Ent | ✅ Any | ❌ | ❌ Opaque | ⚠️ Portal | ⚠️ Task | ⚠️ Ent | ⚠️ Multi | ⚠️ ACT-1 | ⚠️ Ent | ❌ Prop |
+| [**Airkit**](https://www.airkit.com) | CX AI | ❌ Cloud | ⚠️ Seat | ⚠️ Airkit | ❌ | ⚠️ CC | ⚠️ Studio | ⚠️ Bot | ⚠️ Sess | ❌ | ⚠️ Builder | ❌ | ⚠️ Freem |
+| [**Embra**](https://www.embra.ai) | Know AI | ❌ Cloud | ⚠️ Seat | ✅ Multi | ❌ | ❌ Opaque | ⚠️ Space | ❌ | ⚠️ Logs | ⚠️ Know | ❌ | ❌ | ⚠️ Freem |
+| [**Corr**](https://corr.ai) | AI Agent | ❌ Cloud | ⚠️ Seat | ✅ Multi | ⚠️ Rdmap | ❌ Opaque | ⚠️ Dash | ⚠️ Queue | ⚠️ Basic | ⚠️ Gen | ⚠️ Config | ⚠️ Multi | ⚠️ Beta |
+| [**Superagent**](https://superagent.sh) | OSS Agent | ✅ Self | ✅ MIT | ✅ Any | ⚠️ Tools | ⚠️ Back | ⚠️ LangS | ⚠️ Custom | ⚠️ Custom | ⚠️ Tool | ⚠️ Config | ⚠️ Single | ✅ MIT |
+| [**Jina AI**](https://jina.ai) | Infra | ⚠️ Hybrid | ⚠️ Per-call | ✅ Any | ⚠️ Proxy | ⚠️ Pro | ⚠️ Dash | ❌ | ⚠️ API | ⚠️ Read | ⚠️ Svc | ⚠️ Read | ⚠️ Partial |
+| [**MindOS**](https://www.mindos.com) | Agent Plat | ❌ Cloud | ⚠️ Sub | ⚠️ MindOS | ⚠️ Plugins | ❌ Opaque | ✅ Portal | ⚠️ Agent | ⚠️ Sess | ⚠️ Know | ⚠️ Builder | ⚠️ Multi | ⚠️ Freem |
+| [**AutoGen**](https://microsoft.github.io/autogen) | OSS Frame | ✅ Self | ✅ MIT | ✅ Any | ⚠️ Tools | ❌ | ❌ | ❌ | ⚠️ Console | ⚠️ Rsrch | ⚠️ Code | ⚠️ Conv | ✅ MIT |
+| [**CrewAI**](https://www.crewai.com) | OSS Multi | ✅ Self | ✅ MIT | ✅ Any | ⚠️ Tools | ⚠️ LangS | ⚠️ LangS | ⚠️ Crew | ⚠️ LangS | ⚠️ Role | ⚠️ YAML | ⚠️ Role | ✅ MIT |
+| [**LangGraph**](https://www.langchain.com/langgraph) | OSS Workfl | ✅ Self | ✅ Apache | ✅ Any | ⚠️ LC | ⚠️ LangS | ⚠️ LangS | ⚠️ Check | ⚠️ LangS | ⚠️ Workfl | ⚠️ Graph | ⚠️ Graph | ✅ Apache |
+| [**MetaGPT**](https://www.deepwisdom.ai) | OSS Dev | ✅ Self | ✅ MIT | ⚠️ GPT4 | ❌ | ❌ | ❌ | ❌ | ⚠️ Console | ⚠️ Dev | ⚠️ Role | ⚠️ Prompt | ✅ MIT |
+| [**OpenDevin**](https://www.all-hands.dev) | OSS Code | ✅ Self | ⚠️ AGPL | ✅ Any | ⚠️ Plugins | ❌ | ⚠️ Web UI | ⚠️ Loop | ⚠️ Events | ⚠️ SWE | ⚠️ AgentG | ⚠️ Event | ⚠️ AGPL |
+| [**SWE-agent**](https://swe-agent.com) | OSS SWE | ✅ Self | ✅ Apache | ✅ Any | ❌ | ❌ | ❌ CLI | ❌ | ⚠️ Term | ⚠️ CLI | ⚠️ CLAUDE | ❌ | ✅ Apache |
+| [**Continue Dev**](https://continue.dev) | OSS IDE | ✅ Local | ✅ Apache | ✅ Any | ⚠️ Config | ❌ | ⚠️ IDE | ❌ | ⚠️ IDE | ⚠️ IDE | ⚠️ Config | ⚠️ Pair | ✅ Apache |
+| [**Moss**](https://moss.sh) | OSS Code | ✅ Self | ✅ MIT | ✅ Any | ⚠️ Tools | ❌ | ⚠️ Web | ⚠️ Basic | ⚠️ Hist | ⚠️ Gen | ⚠️ Miss | ⚠️ Miss | ✅ MIT |
 
 ### Why Teams Choose Quay
 
-**vs. Open-Source Frameworks (AutoGen, CrewAI, MetaGPT, OpenDevin)**
+**vs. Open-Source Frameworks ([AutoGen](https://microsoft.github.io/autogen), [CrewAI](https://www.crewai.com), [MetaGPT](https://www.deepwisdom.ai), [OpenDevin](https://www.all-hands.dev))**
 
-AutoGen, CrewAI, LangGraph, MetaGPT, and OpenDevin are powerful *research-grade* tools — but they're frameworks, not platforms. You still need to build: auth, a dashboard, state persistence, cost tracking, and deployment pipelines. Quay provides all of that out of the box with a production-ready UI.
+[AutoGen](https://microsoft.github.io/autogen), [CrewAI](https://www.crewai.com), [LangGraph](https://www.langchain.com/langgraph), [MetaGPT](https://www.deepwisdom.ai), and [OpenDevin](https://www.all-hands.dev) are powerful *research-grade* tools — but they're frameworks, not platforms. You still need to build: auth, a dashboard, state persistence, cost tracking, and deployment pipelines. Quay provides all of that out of the box with a production-ready UI.
 
-| Capability | AutoGen/CrewAI/MetaGPT | **Quay** |
-|-----------|---------------------|----------|
+| Capability | [AutoGen](https://microsoft.github.io/autogen)/[CrewAI](https://www.crewai.com)/[MetaGPT](https://www.deepwisdom.ai) | **Quay** |
+|-----------|-----------------------------------------|----------|
 | Production dashboard | ❌ | ✅ Live SSE + Kanban |
 | Task state machine | ❌ | ✅ 7-state with transitions |
 | Cost per LLM call | ❌ | ✅ Per-call USD logging |
@@ -108,12 +109,12 @@ AutoGen, CrewAI, LangGraph, MetaGPT, and OpenDevin are powerful *research-grade*
 | Self-hosted | ✅ | ✅ |
 | Zero-config start | ❌ | ✅ `bun run scripts/seed.ts` |
 
-**vs. XHawk OpenFactory**
+**vs. [XHawk OpenFactory](https://xhawk.ai)**
 
-XHawk is the closest commercial equivalent — but it's cloud-only with opaque enterprise pricing and no self-hosted option. If your team has compliance requirements (GDPR, SOC2, data residency), XHawk may not be an option.
+[XHawk](https://xhawk.ai) is the closest commercial equivalent — but it's cloud-only with opaque enterprise pricing and no self-hosted option. If your team has compliance requirements (GDPR, SOC2, data residency), XHawk may not be an option.
 
-| Capability | XHawk | **Quay** |
-|-----------|-------|----------|
+| Capability | [XHawk OpenFactory](https://xhawk.ai) | **Quay** |
+|-----------|---------------------------|----------|
 | Self-hosted | ❌ Cloud-only | ✅ Run on your infra |
 | Cost transparency | ❌ Opaque | ✅ Per-call USD logging |
 | Audit trail | ⚠️ Logs | ✅ Full SQLite schema |
@@ -121,44 +122,44 @@ XHawk is the closest commercial equivalent — but it's cloud-only with opaque e
 | Pricing | Enterprise (opaque) | ✅ MIT (open source) |
 | Customization | ⚠️ Configurable | ✅ Full pipeline code |
 
-**vs. Enterprise Platforms (ServiceNow, Copilot Studio, Einstein)**
+**vs. Enterprise Platforms ([ServiceNow](https://www.servicenow.com/products/ai-agents.html), [Copilot Studio](https://www.microsoft.com/microsoft-copilot/microsoft-copilot-studio), [Einstein](https://www.salesforce.com/products/einstein/einstein-ai-agent/))**
 
-ServiceNow AI Agents, Microsoft Copilot Studio, and Salesforce Einstein are locked to their respective ecosystems — great if you live in those platforms, expensive and restrictive otherwise. Quay integrates with *any* LLM provider and any MCP tool server.
+[ServiceNow AI Agents](https://www.servicenow.com/products/ai-agents.html), [Microsoft Copilot Studio](https://www.microsoft.com/microsoft-copilot/microsoft-copilot-studio), and [Salesforce Einstein Agent](https://www.salesforce.com/products/einstein/einstein-ai-agent/) are locked to their respective ecosystems — great if you live in those platforms, expensive and restrictive otherwise. Quay integrates with *any* LLM provider via [A3M Router](https://github.com/Das-rebel/a3m-router) and any MCP tool server.
 
 | Capability | ServiceNow / Copilot Studio / Einstein | **Quay** |
-|-----------|-----------------------------------|----------|
-| Non-proprietary LLMs | ❌ | ✅ Any provider via A3M |
+|-----------|----------------------------------------|----------|
+| Non-proprietary LLMs | ❌ | ✅ Any via [A3M](https://github.com/Das-rebel/a3m-router) |
 | MCP tool servers | ⚠️ Via integration | ✅ Native |
 | Self-hosted | ❌ | ✅ |
 | Transparent pricing | ❌ Enterprise quote | ✅ Open source |
 | Custom pipeline stages | ⚠️ Flow Designer | ✅ Any stage, any code |
 | Data residency | ❌ Cloud-only | ✅ Full control |
 
-**vs. Startups (MultiOn, Adept, Airkit, Embra, Corr)**
+**vs. Startups ([MultiOn](https://multion.ai), [Adept](https://www.adept.ai/act), [Airkit](https://www.airkit.com), [Embra](https://www.embra.ai), [Corr](https://corr.ai))**
 
-Most AI agent startups are either browser-focused (MultiOn), enterprise-SaaS with opaque pricing (Adept, Corr), or narrow-use-case (Airkit). Quay is the only startup/open-source option with a full production software factory — complete state machine, real-time dashboard, audit trail, MCP, and cost logging — without vendor lock-in.
+Most AI agent startups are either browser-focused ([MultiOn](https://multion.ai)), enterprise-SaaS with opaque pricing ([Adept](https://www.adept.ai/act), [Corr](https://corr.ai)), or narrow-use-case ([Airkit](https://www.airkit.com)). Quay is the only open-source option with a full production software factory — complete state machine, real-time dashboard, audit trail, MCP, and cost logging — without vendor lock-in.
 
 ### Scoring Summary
 
 Based on the comparison across 13 key parameters:
 
-| Category | Quay Score | Best Open Source | Best Enterprise |
-|----------|-------------|-----------------|-----------------|
-| Deployment flexibility | 10/10 ✅ | 10/10 (AutoGen, CrewAI) | 4/10 (ServiceNow) |
-| LLM flexibility | 10/10 ✅ | 10/10 (Quay, AutoGen) | 3/10 (Copilot Studio) |
-| MCP integration | 10/10 ✅ | 5/10 (CrewAI) | 3/10 (ServiceNow) |
-| Cost transparency | 10/10 ✅ | 0/10 (AutoGen, OpenDevin) | 2/10 (XHawk) |
-| Real-time dashboard | 9/10 ✅ | 3/10 (OpenDevin web UI) | 6/10 (Copilot Studio) |
-| Task state machine | 10/10 ✅ | 0/10 (most OSS) | 7/10 (ServiceNow) |
-| Audit trail depth | 10/10 ✅ | 2/10 (LangSmith traces) | 8/10 (ServiceNow) |
-| Autonomous coding | 9/10 ✅ | 8/10 (OpenDevin) | 6/10 (XHawk) |
-| Pipeline customization | 10/10 ✅ | 7/10 (CrewAI YAML) | 5/10 (Workato) |
-| Multi-agent support | 8/10 ✅ | 7/10 (MetaGPT) | 7/10 (XHawk) |
-| Open source | 10/10 ✅ | 10/10 (Quay, AutoGen) | 0/10 |
-| Production readiness | 8/10 ✅ | 4/10 (OpenDevin) | 8/10 (ServiceNow) |
+| Category | [Quay](https://github.com/Das-rebel/quay) Score | Best Open Source | Best Enterprise |
+|----------|--------------------------------------|-----------------|-----------------|
+| Deployment flexibility | 10/10 ✅ | 10/10 ([AutoGen](https://microsoft.github.io/autogen), [CrewAI](https://www.crewai.com)) | 4/10 ([ServiceNow](https://www.servicenow.com/products/ai-agents.html)) |
+| LLM flexibility | 10/10 ✅ | 10/10 ([Quay](https://github.com/Das-rebel/quay), [AutoGen](https://microsoft.github.io/autogen)) | 3/10 ([Copilot Studio](https://www.microsoft.com/microsoft-copilot/microsoft-copilot-studio)) |
+| MCP integration | 10/10 ✅ | 5/10 ([CrewAI](https://www.crewai.com)) | 3/10 ([ServiceNow](https://www.servicenow.com/products/ai-agents.html)) |
+| Cost transparency | 10/10 ✅ | 0/10 ([AutoGen](https://microsoft.github.io/autogen), [OpenDevin](https://www.all-hands.dev)) | 2/10 ([XHawk](https://xhawk.ai)) |
+| Real-time dashboard | 9/10 ✅ | 3/10 ([OpenDevin](https://www.all-hands.dev)) | 6/10 ([Copilot Studio](https://www.microsoft.com/microsoft-copilot/microsoft-copilot-studio)) |
+| Task state machine | 10/10 ✅ | 0/10 (most OSS) | 7/10 ([ServiceNow](https://www.servicenow.com/products/ai-agents.html)) |
+| Audit trail depth | 10/10 ✅ | 2/10 ([LangGraph](https://www.langchain.com/langgraph)) | 8/10 ([ServiceNow](https://www.servicenow.com/products/ai-agents.html)) |
+| Autonomous coding | 9/10 ✅ | 8/10 ([OpenDevin](https://www.all-hands.dev)) | 6/10 ([XHawk](https://xhawk.ai)) |
+| Pipeline customization | 10/10 ✅ | 7/10 ([CrewAI](https://www.crewai.com)) | 5/10 ([Workato](https://www.workato.com)) |
+| Multi-agent support | 8/10 ✅ | 7/10 ([MetaGPT](https://www.deepwisdom.ai)) | 7/10 ([XHawk](https://xhawk.ai)) |
+| Open source | 10/10 ✅ | 10/10 ([Quay](https://github.com/Das-rebel/quay), [AutoGen](https://microsoft.github.io/autogen)) | 0/10 |
+| Production readiness | 8/10 ✅ | 4/10 ([OpenDevin](https://www.all-hands.dev)) | 8/10 ([ServiceNow](https://www.servicenow.com/products/ai-agents.html)) |
 | **Total** | **114/130** | ~58/130 (best OSS) | ~58/130 (best ent) |
 
-**Quay is the only platform that combines: self-hosted deployment + any LLM + native MCP + per-call cost transparency + full state machine + real-time dashboard + open source MIT license.**
+**Quay is the only platform that combines: self-hosted deployment + any LLM via [A3M Router](https://github.com/Das-rebel/a3m-router) + native MCP + per-call cost transparency + full state machine + real-time dashboard + open source MIT license.**
 
 ---
 
@@ -308,14 +309,14 @@ BLOCKED ← (can block from REVIEW)
 
 | Layer | Technology |
 |---|---|
-| API Server | [Hono](https://hono.dev) + Bun |
-| Database | SQLite via [Drizzle ORM](https://orm.drizzle.team) + `bun:sqlite` |
+| API Server | [Hono](https://hono.dev) + [Bun](https://bun.sh) |
+| Database | [SQLite](https://www.sqlite.org) via [Drizzle ORM](https://orm.drizzle.team) + `bun:sqlite` |
 | Dashboard | [SvelteKit](https://kit.svelte.dev) 5 (runes) |
 | AI Routing | [A3M Router](https://github.com/Das-rebel/a3m-router) |
 | Agent Protocol | [Model Context Protocol (MCP)](https://modelcontextprotocol.io) |
-| Task Queue | BullMQ + Redis |
-| Streaming | Server-Sent Events (SSE) |
-| Validation | Zod |
+| Task Queue | [BullMQ](https://docs.bullmq.io) + [Redis](https://redis.io) |
+| Streaming | [Server-Sent Events (SSE)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) |
+| Validation | [Zod](https://zod.dev) |
 
 ---
 

@@ -300,6 +300,50 @@
       color: var(--text);
     }
 
+    /* ── Comparison Table ── */
+    .comparison-scroll { overflow-x: auto; margin: 40px 0; border-radius: 12px; border: 1px solid var(--border); }
+    .comparison-table {
+      width: 100%; border-collapse: collapse; font-size: 12px; white-space: nowrap;
+      background: var(--surface); border-radius: 12px; overflow: hidden;
+    }
+    .comparison-table thead tr { background: #0a0e12; }
+    .comparison-table th {
+      padding: 10px 12px; text-align: left; font-weight: 700; color: var(--muted);
+      border-bottom: 1px solid var(--border); font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.06em; position: sticky; top: 0; background: #0a0e12; z-index: 1;
+    }
+    .comparison-table td {
+      padding: 9px 12px; border-bottom: 1px solid rgba(30,41,59,0.5);
+      color: #94a3b8; vertical-align: middle;
+    }
+    .comparison-table tbody tr:last-child td { border-bottom: none; }
+    .comparison-table tbody tr:hover td { background: rgba(90,27,169,0.05); }
+    .comparison-table .plat-name { font-weight: 600; color: #e2e8f0; }
+    .comparison-table .plat-type { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .comparison-table .quay-row td { background: rgba(90,27,169,0.12) !important; }
+    .comparison-table .quay-row .plat-name { color: var(--accent); }
+    .comparison-table .yes { color: #10b981; font-weight: 700; }
+    .comparison-table .partial { color: #f59e0b; }
+    .comparison-table .no { color: #ef4444; }
+    .comparison-table .check { color: #10b981; }
+    .comparison-table .cross { color: #ef4444; }
+    .comparison-table .dot { color: #f59e0b; }
+    .comparison-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 80px 40px; max-width: 100%; overflow: hidden; }
+    .comparison-legend { display: flex; gap: 20px; margin-top: 16px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .why-section { margin-top: 40px; }
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 24px; }
+    .why-card { background: #070b10; border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .why-card h4 { font-size: 14px; font-weight: 700; color: #f8fafc; margin-bottom: 12px; }
+    .why-card table { width: 100%; font-size: 12px; }
+    .why-card td { padding: 5px 0; color: #94a3b8; border-bottom: 1px solid rgba(30,41,59,0.4); }
+    .why-card td:first-child { color: var(--muted); width: 45%; }
+    .why-card td:last-child { font-weight: 600; }
+    .why-card .quay-win { color: #10b981; }
+    .why-card .other { color: #ef4444; }
+    .why-card .tie { color: #f59e0b; }
+
     /* ── CTA ── */
     .cta-section {
       text-align: center;
@@ -422,6 +466,457 @@
       <div class="feature-icon">🔀</div>
       <h3>A3M Multi-Provider Routing</h3>
       <p>Route tasks to the optimal LLM provider per stage. OpenAI, Anthropic, Groq, Ollama, and 40+ more — adaptive routing built in.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Competitive Comparison -->
+<section class="comparison-section" id="comparison">
+  <div class="section-tag">Benchmark</div>
+  <h2>How Quay compares across 13 parameters</h2>
+  <p class="section-desc">21 platforms evaluated: enterprise suites, AI agent startups, and open-source frameworks.</p>
+
+  <div class="comparison-scroll">
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>Type</th>
+        <th>Deploy</th>
+        <th>Pricing</th>
+        <th>LLM Flex</th>
+        <th>MCP</th>
+        <th>Cost Transp</th>
+        <th>Dashboard</th>
+        <th>State Mach</th>
+        <th>Audit</th>
+        <th>Auto Code</th>
+        <th>Pipeline</th>
+        <th>Multi-Agent</th>
+        <th>Open Src</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Quay -->
+      <tr class="quay-row">
+        <td><span class="plat-name">Quay</span></td>
+        <td><span class="plat-type">Factory</span></td>
+        <td class="yes">✅ Self</td>
+        <td class="yes">✅ MIT</td>
+        <td class="yes">✅ Any</td>
+        <td class="yes">✅ Native</td>
+        <td class="yes">✅ Per-call</td>
+        <td class="yes">✅ Live SSE</td>
+        <td class="yes">✅ 7-state</td>
+        <td class="yes">✅ SQLite</td>
+        <td class="yes">✅ Prod</td>
+        <td class="yes">✅ Full</td>
+        <td class="yes">✅ Role</td>
+        <td class="yes">✅ MIT</td>
+      </tr>
+      <!-- Enterprise -->
+      <tr>
+        <td><span class="plat-name">XHawk OpenFactory</span></td>
+        <td><span class="plat-type">Factory</span></td>
+        <td class="no">❌ Cloud</td>
+        <td class="partial">⚠️ Opaque</td>
+        <td class="partial">⚠️ Prop</td>
+        <td class="no">❌ No</td>
+        <td class="no">❌ Opaque</td>
+        <td class="partial">⚠️ Dash</td>
+        <td class="partial">⚠️ Basic</td>
+        <td class="partial">⚠️ Logs</td>
+        <td class="yes">✅ Prod</td>
+        <td class="partial">⚠️ Config</td>
+        <td class="partial">⚠️ Multi</td>
+        <td class="no">❌ Prop</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">ServiceNow AI</span></td>
+        <td><span class="plat-type">Enterprise</span></td>
+        <td class="no">❌ Cloud</td>
+        <td class="partial">⚠️ Opaque</td>
+        <td class="partial">⚠️ Prop</td>
+        <td class="partial">⚠️ Integr</td>
+        <td class="partial">⚠️ Agg</td>
+        <td class="partial">⚠️ Now UI</td>
+        <td class="yes">✅ Full</td>
+        <td class="yes">✅ Full</td>
+        <td class="partial">⚠️ Auto</td>
+        <td class="partial">⚠️ Flow</td>
+        <td class="partial">⚠️ Virt</td>
+        <td class="no">❌ Prop</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Copilot Studio</span></td>
+        <td><span class="plat-type">Enterprise</span></td>
+        <td class="no">❌ Cloud</td>
+        <td class="partial">⚠️ Per-seat</td>
+        <td class="partial">⚠️ Copilot</td>
+        <td class="partial">⚠️ Conn</td>
+        <td class="partial">⚠️ Admin</td>
+        <td class="yes">✅ Power</td>
+        <td class="yes">✅ Flows</td>
+        <td class="yes">✅ Full</td>
+        <td class="partial">⚠️ Prompt</td>
+        <td class="partial">⚠️ Studio</td>
+        <td class="partial">⚠️ Auto</td>
+        <td class="no">❌ Prop</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Einstein Agent</span></td>
+        <td><span class="plat-type">CRM</span></td>
+        <td class="no">❌ Cloud</td>
+        <td class="partial">⚠️ Per-agent</td>
+        <td class="partial">⚠️ Einst</td>
+        <td class="partial">⚠️ APIs</td>
+        <td class="partial">⚠️ CRM</td>
+        <td class="partial">⚠️ SF UI</td>
+        <td class="partial">⚠️ Case</td>
+        <td class="yes">✅ Full</td>
+        <td class="partial">⚠️ Case</td>
+        <td class="partial">⚠️ Flow</td>
+        <td class="partial">⚠️ Einst</td>
+        <td class="no">❌ Prop</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Workato</span></td>
+        <td><span class="plat-type">iPaaS</span></td>
+        <td class="partial">⚠️ Hybrid</td>
+        <td class="partial">⚠️ Per-job</td>
+        <td class="partial">⚠️ Wkto</td>
+        <td class="partial">⚠️ 200+</td>
+        <td class="partial">⚠️ Conn</td>
+        <td class="partial">⚠️ Rpts</td>
+        <td class="partial">⚠️ Job</td>
+        <td class="yes">✅ Full</td>
+        <td class="partial">⚠️ Recipe</td>
+        <td class="partial">⚠️ Low</td>
+        <td class="partial">⚠️ Recipe</td>
+        <td class="partial">⚠️ Src</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Auto Any</span></td>
+        <td><span class="plat-type">RPA+AI</span></td>
+        <td class="partial">⚠️ On-prem</td>
+        <td class="partial">⚠️ Bot</td>
+        <td class="partial">⚠️ Insight</td>
+        <td class="partial">⚠️ Integr</td>
+        <td class="partial">⚠️ Analytics</td>
+        <td class="partial">⚠️ Room</td>
+        <td class="partial">⚠️ Attend</td>
+        <td class="yes">✅ Full</td>
+        <td class="partial">⚠️ Attend</td>
+        <td class="partial">⚠️ RPA</td>
+        <td class="partial">⚠️ RPA</td>
+        <td class="no">❌ Prop</td>
+      </tr>
+      <!-- Startups -->
+      <tr>
+        <td><span class="plat-name">MultiOn</span></td>
+        <td><span class="plat-type">Browser AI</span></td>
+        <td class="no">❌ Cloud</td>
+        <td class="partial">⚠️ API</td>
+        <td class="yes">✅ Any</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ API</td>
+        <td class="partial">⚠️ API</td>
+        <td class="partial">⚠️ Basic</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ Browser</td>
+        <td class="partial">⚠️ Browser</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ Freem</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Adept ACT-1</span></td>
+        <td><span class="plat-type">Ent AI</span></td>
+        <td class="no">❌ Cloud</td>
+        <td class="partial">⚠️ Ent</td>
+        <td class="yes">✅ Any</td>
+        <td class="no">❌ No</td>
+        <td class="no">❌ Opaque</td>
+        <td class="partial">⚠️ Portal</td>
+        <td class="partial">⚠️ Task</td>
+        <td class="partial">⚠️ Ent</td>
+        <td class="partial">⚠️ Multi</td>
+        <td class="partial">⚠️ ACT-1</td>
+        <td class="partial">⚠️ Ent</td>
+        <td class="no">❌ Prop</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Airkit</span></td>
+        <td><span class="plat-type">CX AI</span></td>
+        <td class="no">❌ Cloud</td>
+        <td class="partial">⚠️ Seat</td>
+        <td class="partial">⚠️ Airkit</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ CC</td>
+        <td class="partial">⚠️ Studio</td>
+        <td class="partial">⚠️ Bot</td>
+        <td class="partial">⚠️ Sess</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ Builder</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ Freem</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Embra</span></td>
+        <td><span class="plat-type">Know AI</span></td>
+        <td class="no">❌ Cloud</td>
+        <td class="partial">⚠️ Seat</td>
+        <td class="yes">✅ Multi</td>
+        <td class="no">❌ No</td>
+        <td class="no">❌ Opaque</td>
+        <td class="partial">⚠️ Space</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ Logs</td>
+        <td class="partial">⚠️ Know</td>
+        <td class="no">❌ No</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ Freem</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Corr</span></td>
+        <td><span class="plat-type">AI Agent</span></td>
+        <td class="no">❌ Cloud</td>
+        <td class="partial">⚠️ Seat</td>
+        <td class="yes">✅ Multi</td>
+        <td class="partial">⚠️ Roadmap</td>
+        <td class="no">❌ Opaque</td>
+        <td class="partial">⚠️ Dash</td>
+        <td class="partial">⚠️ Queue</td>
+        <td class="partial">⚠️ Basic</td>
+        <td class="partial">⚠️ Gen</td>
+        <td class="partial">⚠️ Config</td>
+        <td class="partial">⚠️ Multi</td>
+        <td class="partial">⚠️ Beta</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Superagent</span></td>
+        <td><span class="plat-type">OSS Agent</span></td>
+        <td class="yes">✅ Self</td>
+        <td class="yes">✅ MIT</td>
+        <td class="yes">✅ Any</td>
+        <td class="partial">⚠️ Tools</td>
+        <td class="partial">⚠️ Back</td>
+        <td class="partial">⚠️ LangS</td>
+        <td class="partial">⚠️ Custom</td>
+        <td class="partial">⚠️ Custom</td>
+        <td class="partial">⚠️ Tool</td>
+        <td class="partial">⚠️ Config</td>
+        <td class="partial">⚠️ Single</td>
+        <td class="yes">✅ MIT</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Jina AI</span></td>
+        <td><span class="plat-type">Infra</span></td>
+        <td class="partial">⚠️ Hybrid</td>
+        <td class="partial">⚠️ Per-call</td>
+        <td class="yes">✅ Any</td>
+        <td class="partial">⚠️ Proxy</td>
+        <td class="partial">⚠️ Pro</td>
+        <td class="partial">⚠️ Dash</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ API</td>
+        <td class="partial">⚠️ Read</td>
+        <td class="partial">⚠️ Svc</td>
+        <td class="partial">⚠️ Read</td>
+        <td class="partial">⚠️ Partial</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">MindOS</span></td>
+        <td><span class="plat-type">Agent Plat</span></td>
+        <td class="no">❌ Cloud</td>
+        <td class="partial">⚠️ Sub</td>
+        <td class="partial">⚠️ MindOS</td>
+        <td class="partial">⚠️ Plugins</td>
+        <td class="no">❌ Opaque</td>
+        <td class="yes">✅ Portal</td>
+        <td class="partial">⚠️ Agent</td>
+        <td class="partial">⚠️ Sess</td>
+        <td class="partial">⚠️ Know</td>
+        <td class="partial">⚠️ Builder</td>
+        <td class="partial">⚠️ Multi</td>
+        <td class="partial">⚠️ Freem</td>
+      </tr>
+      <!-- Open Source -->
+      <tr>
+        <td><span class="plat-name">AutoGen</span></td>
+        <td><span class="plat-type">OSS Frame</span></td>
+        <td class="yes">✅ Self</td>
+        <td class="yes">✅ MIT</td>
+        <td class="yes">✅ Any</td>
+        <td class="partial">⚠️ Tools</td>
+        <td class="no">❌ None</td>
+        <td class="no">❌ No</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ Console</td>
+        <td class="partial">⚠️ Rsrch</td>
+        <td class="partial">⚠️ Code</td>
+        <td class="partial">⚠️ Conv</td>
+        <td class="yes">✅ MIT</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">CrewAI</span></td>
+        <td><span class="plat-type">OSS Multi</span></td>
+        <td class="yes">✅ Self</td>
+        <td class="yes">✅ MIT</td>
+        <td class="yes">✅ Any</td>
+        <td class="partial">⚠️ Tools</td>
+        <td class="partial">⚠️ LangS</td>
+        <td class="partial">⚠️ LangS</td>
+        <td class="partial">⚠️ Crew</td>
+        <td class="partial">⚠️ LangS</td>
+        <td class="partial">⚠️ Role</td>
+        <td class="partial">⚠️ YAML</td>
+        <td class="partial">⚠️ Role</td>
+        <td class="yes">✅ MIT</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">LangGraph</span></td>
+        <td><span class="plat-type">OSS Workfl</span></td>
+        <td class="yes">✅ Self</td>
+        <td class="yes">✅ Apache</td>
+        <td class="yes">✅ Any</td>
+        <td class="partial">⚠️ LC</td>
+        <td class="partial">⚠️ LangS</td>
+        <td class="partial">⚠️ LangS</td>
+        <td class="partial">⚠️ Check</td>
+        <td class="partial">⚠️ LangS</td>
+        <td class="partial">⚠️ Workfl</td>
+        <td class="partial">⚠️ Graph</td>
+        <td class="partial">⚠️ Graph</td>
+        <td class="yes">✅ Apache</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">MetaGPT</span></td>
+        <td><span class="plat-type">OSS Dev</span></td>
+        <td class="yes">✅ Self</td>
+        <td class="yes">✅ MIT</td>
+        <td class="partial">⚠️ GPT4</td>
+        <td class="no">❌ No</td>
+        <td class="no">❌ None</td>
+        <td class="no">❌ No</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ Console</td>
+        <td class="partial">⚠️ Dev</td>
+        <td class="partial">⚠️ Role</td>
+        <td class="partial">⚠️ Prompt</td>
+        <td class="yes">✅ MIT</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">OpenDevin</span></td>
+        <td><span class="plat-type">OSS Code</span></td>
+        <td class="yes">✅ Self</td>
+        <td class="partial">⚠️ AGPL</td>
+        <td class="yes">✅ Any</td>
+        <td class="partial">⚠️ Plugins</td>
+        <td class="no">❌ None</td>
+        <td class="partial">⚠️ Web UI</td>
+        <td class="partial">⚠️ Loop</td>
+        <td class="partial">⚠️ Events</td>
+        <td class="partial">⚠️ SWE</td>
+        <td class="partial">⚠️ AgentG</td>
+        <td class="partial">⚠️ Event</td>
+        <td class="partial">⚠️ AGPL</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">SWE-agent</span></td>
+        <td><span class="plat-type">OSS SWE</span></td>
+        <td class="yes">✅ Self</td>
+        <td class="yes">✅ Apache</td>
+        <td class="yes">✅ Any</td>
+        <td class="no">❌ No</td>
+        <td class="no">❌ None</td>
+        <td class="no">❌ CLI</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ Term</td>
+        <td class="partial">⚠️ CLI</td>
+        <td class="partial">⚠️ CL</td>
+        <td class="no">❌ No</td>
+        <td class="yes">✅ Apache</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Continue Dev</span></td>
+        <td><span class="plat-type">OSS IDE</span></td>
+        <td class="yes">✅ Local</td>
+        <td class="yes">✅ Apache</td>
+        <td class="yes">✅ Any</td>
+        <td class="partial">⚠️ Config</td>
+        <td class="no">❌ None</td>
+        <td class="partial">⚠️ IDE</td>
+        <td class="no">❌ No</td>
+        <td class="partial">⚠️ IDE</td>
+        <td class="partial">⚠️ IDE</td>
+        <td class="partial">⚠️ Config</td>
+        <td class="partial">⚠️ Pair</td>
+        <td class="yes">✅ Apache</td>
+      </tr>
+      <tr>
+        <td><span class="plat-name">Moss</span></td>
+        <td><span class="plat-type">OSS Code</span></td>
+        <td class="yes">✅ Self</td>
+        <td class="yes">✅ MIT</td>
+        <td class="yes">✅ Any</td>
+        <td class="partial">⚠️ Tools</td>
+        <td class="no">❌ None</td>
+        <td class="partial">⚠️ Web</td>
+        <td class="partial">⚠️ Basic</td>
+        <td class="partial">⚠️ Hist</td>
+        <td class="partial">⚠️ Gen</td>
+        <td class="partial">⚠️ Miss</td>
+        <td class="partial">⚠️ Miss</td>
+        <td class="yes">✅ MIT</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="comparison-legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div> ✅ Full support (production-ready)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> ⚠️ Partial / Limited / Roadmap</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> ❌ Not available</div>
+  </div>
+
+  <div class="why-section">
+    <h3 style="font-size:1.3rem;font-weight:700;color:#f8fafc;margin-bottom:8px">Why Quay wins on the metrics that matter</h3>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:24px">Quay is the only open-source platform that combines self-hosted deployment + any LLM + native MCP + per-call cost transparency + full state machine + real-time dashboard.</p>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <h4>vs. Open-Source Frameworks</h4>
+        <table>
+          <tr><td>Production dashboard</td><td class="other">❌ None</td><td class="quay-win">✅ Quay</td></tr>
+          <tr><td>Task state machine</td><td class="other">❌ None</td><td class="quay-win">✅ 7-state</td></tr>
+          <tr><td>Cost per LLM call</td><td class="other">❌ None</td><td class="quay-win">✅ Per-call</td></tr>
+          <tr><td>MCP native</td><td class="tie">⚠️ Custom</td><td class="quay-win">✅ Native</td></tr>
+          <tr><td>SQLite audit trail</td><td class="other">❌ None</td><td class="quay-win">✅ Full</td></tr>
+          <tr><td>Zero-config start</td><td class="other">❌ Code-first</td><td class="quay-win">✅ Seed & run</td></tr>
+        </table>
+      </div>
+      <div class="why-card">
+        <h4>vs. XHawk OpenFactory</h4>
+        <table>
+          <tr><td>Self-hosted</td><td class="other">❌ Cloud-only</td><td class="quay-win">✅ Your infra</td></tr>
+          <tr><td>Cost transparency</td><td class="other">❌ Opaque</td><td class="quay-win">✅ Per-call</td></tr>
+          <tr><td>Audit trail</td><td class="tie">⚠️ Logs</td><td class="quay-win">✅ SQLite</td></tr>
+          <tr><td>MCP support</td><td class="other">❌ No</td><td class="quay-win">✅ Native</td></tr>
+          <tr><td>Pricing</td><td class="other">❌ Enterprise</td><td class="quay-win">✅ MIT</td></tr>
+          <tr><td>Custom pipeline</td><td class="tie">⚠️ Config</td><td class="quay-win">✅ Full code</td></tr>
+        </table>
+      </div>
+      <div class="why-card">
+        <h4>vs. Enterprise Platforms</h4>
+        <table>
+          <tr><td>Non-proprietary LLMs</td><td class="other">❌ Locked</td><td class="quay-win">✅ Any via A3M</td></tr>
+          <tr><td>MCP native</td><td class="other">❌ Integr</td><td class="quay-win">✅ Native</td></tr>
+          <tr><td>Self-hosted</td><td class="other">❌ Cloud-only</td><td class="quay-win">✅ ✅</td></tr>
+          <tr><td>Transparent pricing</td><td class="other">❌ Opaque</td><td class="quay-win">✅ Open src</td></tr>
+          <tr><td>Custom stages</td><td class="tie">⚠️ Flow Designer</td><td class="quay-win">✅ Any code</td></tr>
+          <tr><td>Data residency</td><td class="other">❌ Cloud-only</td><td class="quay-win">✅ Full control</td></tr>
+        </table>
+      </div>
     </div>
   </div>
 </section>
