@@ -67,23 +67,33 @@ Quay sits at the intersection of **enterprise capability** and **open-source fle
 
 ### Platform Comparison
 
-*Parameters as rows, platforms as columns. Quay wins on every metric that matters.*
+*21 platforms compared across 13 parameters — platforms as rows for readability.*
 
-| Parameter | [**Quay**](https://github.com/Das-rebel/quay) | [**XHawk**](https://xhawk.ai) | [**ServiceNow**](https://www.servicenow.com/products/ai-agents.html) | [**Copilot Studio**](https://www.microsoft.com/microsoft-copilot/microsoft-copilot-studio) | [**Einstein Agent**](https://www.salesforce.com/products/einstein/einstein-ai-agent/) | [**Workato**](https://www.workato.com) | [**AutoAny**](https://www.automationanywhere.com) | [**MultiOn**](https://multion.ai) | [**Adept ACT-1**](https://www.adept.ai/act) | [**Airkit**](https://www.airkit.com) | [**Embra**](https://www.embra.ai) | [**Corr**](https://corr.ai) | [**Superagent**](https://superagent.sh) | [**Jina AI**](https://jina.ai) | [**MindOS**](https://www.mindos.com) | [**AutoGen**](https://microsoft.github.io/autogen) | [**CrewAI**](https://www.crewai.com) | [**LangGraph**](https://www.langchain.com/langgraph) | [**MetaGPT**](https://www.deepwisdom.ai) | [**OpenDevin**](https://www.all-hands.dev) | [**SWE-agent**](https://swe-agent.com) | [**Continue Dev**](https://continue.dev) | [**Moss**](https://moss.sh) |
-|---------|------|-----------|------------|----------|---------|--------|--------|--------|-------|-------|------|------|-----------|-------|-------|--------|--------|----------|--------|------|-------|------|
-| **Type** | Factory | Factory | Enterprise | Enterprise | CRM | iPaaS+AI | RPA+AI | Browser AI | Ent AI | CX AI | Know AI | AI Agent | OSS Agent | Infra | Agent Plat | OSS Frame | OSS Multi | OSS Workfl | OSS Dev | OSS Code | OSS SWE | OSS IDE | OSS Code |
-| **Deploy** | ✅ Self | ❌ Cloud | ❌ Cloud | ❌ Cloud | ❌ Cloud | ⚠️ Hybrid | ⚠️ On-prem | ❌ Cloud | ❌ Cloud | ❌ Cloud | ❌ Cloud | ❌ Cloud | ✅ Self | ⚠️ Hybrid | ❌ Cloud | ✅ Self | ✅ Self | ✅ Self | ✅ Self | ✅ Self | ✅ Self | ✅ Local | ✅ Self |
-| **Pricing** | ✅ MIT | ⚠️ Opaque | ⚠️ Opaque | ⚠️ Per-seat | ⚠️ Per-agent | ⚠️ Per-job | ⚠️ Bot | ⚠️ API | ⚠️ Ent | ⚠️ Seat | ⚠️ Seat | ⚠️ Seat | ✅ MIT | ⚠️ Per-call | ⚠️ Sub | ✅ MIT | ✅ MIT | ✅ Apache | ✅ MIT | ⚠️ AGPL | ✅ Apache | ✅ Apache | ✅ MIT |
-| **LLM Flex** | ✅ Any (40+) | ⚠️ Prop | ⚠️ Prop | ⚠️ Copilot | ⚠️ Einst | ⚠️ Wkto | ⚠️ Insight | ✅ Any | ✅ Any | ⚠️ Airkit | ✅ Multi | ✅ Multi | ✅ Any | ✅ Any | ⚠️ MindOS | ✅ Any | ✅ Any | ✅ Any | ⚠️ GPT4 | ✅ Any | ✅ Any | ✅ Any | ✅ Any |
-| **MCP** | ✅ Native | ❌ | ⚠️ Integr | ⚠️ Conn | ⚠️ APIs | ⚠️ 200+ | ⚠️ Integr | ❌ | ❌ | ❌ | ❌ | ⚠️ Roadmap | ⚠️ Tools | ⚠️ Proxy | ⚠️ Plugins | ⚠️ Tools | ⚠️ Tools | ⚠️ LC | ❌ | ⚠️ Plugins | ❌ | ⚠️ Config | ⚠️ Tools |
-| **Cost Transp** | ✅ Per-call | ❌ Opaque | ⚠️ Agg | ⚠️ Admin | ⚠️ CRM | ⚠️ Conn | ⚠️ Analytics | ⚠️ API | ❌ Opaque | ⚠️ CC | ❌ Opaque | ❌ Opaque | ⚠️ Back | ⚠️ Pro | ❌ Opaque | ❌ | ⚠️ LangS | ⚠️ LangS | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Dashboard** | ✅ Live SSE | ⚠️ Dash | ⚠️ Now UI | ✅ Power | ⚠️ SF UI | ⚠️ Rpter | ⚠️ Room | ⚠️ API | ⚠️ Portal | ⚠️ Studio | ⚠️ Space | ⚠️ Dash | ⚠️ LangS | ⚠️ Dash | ✅ Portal | ❌ | ⚠️ LangS | ⚠️ LangS | ❌ | ⚠️ Web UI | ❌ CLI | ⚠️ IDE | ⚠️ Web |
-| **State Mach** | ✅ 7-state | ⚠️ Basic | ✅ Full | ✅ Flows | ⚠️ Case | ⚠️ Job | ⚠️ Attend | ⚠️ Basic | ⚠️ Task | ⚠️ Bot | ❌ | ⚠️ Queue | ⚠️ Custom | ❌ | ⚠️ Agent | ❌ | ⚠️ Crew | ⚠️ Check | ❌ | ⚠️ Loop | ❌ | ❌ | ⚠️ Basic |
-| **Audit** | ✅ SQLite | ⚠️ Logs | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ✅ Full | ❌ | ⚠️ Ent | ⚠️ Sess | ⚠️ Logs | ⚠️ Basic | ⚠️ Custom | ⚠️ API | ⚠️ Sess | ⚠️ Console | ⚠️ LangS | ⚠️ LangS | ⚠️ Console | ⚠️ Events | ⚠️ Term | ⚠️ IDE | ⚠️ Hist |
-| **Auto Code** | ✅ Prod | ✅ Prod | ⚠️ Auto | ⚠️ Prompt | ⚠️ Case | ⚠️ Recipe | ⚠️ Attend | ⚠️ Browser | ⚠️ Multi | ❌ | ⚠️ Know | ⚠️ Gen | ⚠️ Tool | ⚠️ Read | ⚠️ Know | ⚠️ Rsrch | ⚠️ Role | ⚠️ Workfl | ⚠️ Dev | ⚠️ SWE | ⚠️ CLI | ⚠️ IDE | ⚠️ Gen |
-| **Pipeline** | ✅ Full | ⚠️ Config | ⚠️ Flow | ⚠️ Studio | ⚠️ Flow | ⚠️ Low | ⚠️ RPA | ⚠️ Browser | ⚠️ ACT-1 | ⚠️ Builder | ❌ | ⚠️ Config | ⚠️ Config | ⚠️ Svc | ⚠️ Builder | ⚠️ Code | ⚠️ YAML | ⚠️ Graph | ⚠️ Role | ⚠️ AgentG | ⚠️ CLAUDE | ⚠️ Config | ⚠️ Miss |
-| **Multi-Agent** | ✅ Role | ⚠️ Multi | ⚠️ Virt | ⚠️ Auto | ⚠️ Einst | ⚠️ Recipe | ⚠️ RPA | ❌ | ⚠️ Ent | ❌ | ❌ | ⚠️ Multi | ⚠️ Single | ⚠️ Read | ⚠️ Multi | ⚠️ Conv | ⚠️ Role | ⚠️ Graph | ⚠️ Prompt | ⚠️ Event | ❌ | ⚠️ Pair | ⚠️ Miss |
-| **Open Src** | ✅ MIT | ❌ Prop | ❌ Prop | ❌ Prop | ❌ Prop | ⚠️ Src | ❌ Prop | ⚠️ Freem | ❌ Prop | ⚠️ Freem | ⚠️ Freem | ⚠️ Beta | ✅ MIT | ⚠️ Partial | ⚠️ Freem | ✅ MIT | ✅ MIT | ✅ Apache | ✅ MIT | ⚠️ AGPL | ✅ Apache | ✅ Apache | ✅ MIT |
+| Platform | Type | Deploy | Pricing | LLM Flex | MCP | Cost Transp | Dashboard | State Mach | Audit | Auto Code | Pipeline | Multi-Agent | Open Src |
+|---------|------|--------|---------|---------|-----|-----------|----------|----------|------|----------|----------|------------|---------|
+| [**Quay**](https://github.com/Das-rebel/quay) | Factory | ✅ Self | ✅ MIT | ✅ Any (40+) | ✅ Native | ✅ Per-call | ✅ Live SSE | ✅ 7-state | ✅ SQLite | ✅ Prod | ✅ Full | ✅ Role | ✅ MIT |
+| [**XHawk OpenFactory**](https://xhawk.ai) | Factory | ❌ Cloud | ⚠️ Opaque | ⚠️ Prop | ❌ | ❌ Opaque | ⚠️ Dash | ⚠️ Basic | ⚠️ Logs | ✅ Prod | ⚠️ Config | ⚠️ Multi | ❌ Prop |
+| [**ServiceNow AI Agents**](https://www.servicenow.com/products/ai-agents.html) | Enterprise | ❌ Cloud | ⚠️ Opaque | ⚠️ Prop | ⚠️ Integr | ⚠️ Agg | ⚠️ Now UI | ✅ Full | ✅ Full | ⚠️ Auto | ⚠️ Flow | ⚠️ Virt | ❌ Prop |
+| [**Copilot Studio**](https://www.microsoft.com/microsoft-copilot/microsoft-copilot-studio) | Enterprise | ❌ Cloud | ⚠️ Per-seat | ⚠️ Copilot | ⚠️ Conn | ⚠️ Admin | ✅ Power | ✅ Flows | ✅ Full | ⚠️ Prompt | ⚠️ Studio | ⚠️ Auto | ❌ Prop |
+| [**Einstein Agent**](https://www.salesforce.com/products/einstein/einstein-ai-agent/) | CRM | ❌ Cloud | ⚠️ Per-agent | ⚠️ Einst | ⚠️ APIs | ⚠️ CRM | ⚠️ SF UI | ⚠️ Case | ✅ Full | ⚠️ Case | ⚠️ Flow | ⚠️ Einst | ❌ Prop |
+| [**Workato**](https://www.workato.com) | iPaaS+AI | ⚠️ Hybrid | ⚠️ Per-job | ⚠️ Wkto | ⚠️ 200+ | ⚠️ Conn | ⚠️ Rpter | ⚠️ Job | ✅ Full | ⚠️ Recipe | ⚠️ Low | ⚠️ Recipe | ⚠️ Src |
+| [**Automation Anywhere**](https://www.automationanywhere.com) | RPA+AI | ⚠️ On-prem | ⚠️ Bot | ⚠️ Insight | ⚠️ Integr | ⚠️ Analytics | ⚠️ Room | ⚠️ Attend | ✅ Full | ⚠️ Attend | ⚠️ RPA | ⚠️ RPA | ❌ Prop |
+| [**MultiOn**](https://multion.ai) | Browser AI | ❌ Cloud | ⚠️ API | ✅ Any | ❌ | ⚠️ API | ⚠️ API | ⚠️ Basic | ❌ | ⚠️ Browser | ⚠️ Browser | ❌ | ⚠️ Freem |
+| [**Adept ACT-1**](https://www.adept.ai/act) | Ent AI | ❌ Cloud | ⚠️ Ent | ✅ Any | ❌ | ❌ Opaque | ⚠️ Portal | ⚠️ Task | ⚠️ Ent | ⚠️ Multi | ⚠️ ACT-1 | ⚠️ Ent | ❌ Prop |
+| [**Airkit**](https://www.airkit.com) | CX AI | ❌ Cloud | ⚠️ Seat | ⚠️ Airkit | ❌ | ⚠️ CC | ⚠️ Studio | ⚠️ Bot | ⚠️ Sess | ❌ | ⚠️ Builder | ❌ | ⚠️ Freem |
+| [**Embra**](https://www.embra.ai) | Know AI | ❌ Cloud | ⚠️ Seat | ✅ Multi | ❌ | ❌ Opaque | ⚠️ Space | ❌ | ⚠️ Logs | ⚠️ Know | ❌ | ❌ | ⚠️ Freem |
+| [**Corr**](https://corr.ai) | AI Agent | ❌ Cloud | ⚠️ Seat | ✅ Multi | ⚠️ Roadmap | ❌ Opaque | ⚠️ Dash | ⚠️ Queue | ⚠️ Basic | ⚠️ Gen | ⚠️ Config | ⚠️ Multi | ⚠️ Beta |
+| [**Superagent**](https://superagent.sh) | OSS Agent | ✅ Self | ✅ MIT | ✅ Any | ⚠️ Tools | ⚠️ Back | ⚠️ LangS | ⚠️ Custom | ⚠️ Custom | ⚠️ Tool | ⚠️ Config | ⚠️ Single | ✅ MIT |
+| [**Jina AI**](https://jina.ai) | Infra | ⚠️ Hybrid | ⚠️ Per-call | ✅ Any | ⚠️ Proxy | ⚠️ Pro | ⚠️ Dash | ❌ | ⚠️ API | ⚠️ Read | ⚠️ Svc | ⚠️ Read | ⚠️ Partial |
+| [**MindOS**](https://www.mindos.com) | Agent Plat | ❌ Cloud | ⚠️ Sub | ⚠️ MindOS | ⚠️ Plugins | ❌ Opaque | ✅ Portal | ⚠️ Agent | ⚠️ Sess | ⚠️ Know | ⚠️ Builder | ⚠️ Multi | ⚠️ Freem |
+| [**AutoGen**](https://microsoft.github.io/autogen) | OSS Frame | ✅ Self | ✅ MIT | ✅ Any | ⚠️ Tools | ❌ | ❌ | ❌ | ⚠️ Console | ⚠️ Rsrch | ⚠️ Code | ⚠️ Conv | ✅ MIT |
+| [**CrewAI**](https://www.crewai.com) | OSS Multi | ✅ Self | ✅ MIT | ✅ Any | ⚠️ Tools | ⚠️ LangS | ⚠️ LangS | ⚠️ Crew | ⚠️ LangS | ⚠️ Role | ⚠️ YAML | ⚠️ Role | ✅ MIT |
+| [**LangGraph**](https://www.langchain.com/langgraph) | OSS Workfl | ✅ Self | ✅ Apache | ✅ Any | ⚠️ LC | ⚠️ LangS | ⚠️ LangS | ⚠️ Check | ⚠️ LangS | ⚠️ Workfl | ⚠️ Graph | ⚠️ Graph | ✅ Apache |
+| [**MetaGPT**](https://www.deepwisdom.ai) | OSS Dev | ✅ Self | ✅ MIT | ⚠️ GPT4 | ❌ | ❌ | ❌ | ❌ | ⚠️ Console | ⚠️ Dev | ⚠️ Role | ⚠️ Prompt | ✅ MIT |
+| [**OpenDevin**](https://www.all-hands.dev) | OSS Code | ✅ Self | ⚠️ AGPL | ✅ Any | ⚠️ Plugins | ❌ | ⚠️ Web UI | ⚠️ Loop | ⚠️ Events | ⚠️ SWE | ⚠️ AgentG | ⚠️ Event | ⚠️ AGPL |
+| [**SWE-agent**](https://swe-agent.com) | OSS SWE | ✅ Self | ✅ Apache | ✅ Any | ❌ | ❌ | ❌ CLI | ❌ | ⚠️ Term | ⚠️ CLI | ⚠️ CLAUDE | ❌ | ✅ Apache |
+| [**Continue Dev**](https://continue.dev) | OSS IDE | ✅ Local | ✅ Apache | ✅ Any | ⚠️ Config | ❌ | ⚠️ IDE | ❌ | ⚠️ IDE | ⚠️ IDE | ⚠️ Config | ⚠️ Pair | ✅ Apache |
+| [**Moss**](https://moss.sh) | OSS Code | ✅ Self | ✅ MIT | ✅ Any | ⚠️ Tools | ❌ | ⚠️ Web | ⚠️ Basic | ⚠️ Hist | ⚠️ Gen | ⚠️ Miss | ⚠️ Miss | ✅ MIT |
 
 ### Why Teams Choose Quay
 
