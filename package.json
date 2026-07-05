@@ -1,6 +1,6 @@
 {
-  "name": "quay",
-  "version": "0.0.1",
+  "name": "quay-ai-factory",
+  "version": "0.1.0",
   "description": "Quay — Autonomous AI Software Factory. Self-hosted AI agents, MCP integration, customizable pipelines, real-time Mission Control dashboard, cost transparency, and full audit trails.",
   "keywords": [
     "ai-software-factory",

@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/Das-rebel/quay/actions/workflows/ci.yml/badge.svg)](https://github.com/Das-rebel/quay/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
-[![npm: v0.0.1](https://img.shields.io/badge/npm-v0.0.1-purple.svg)](https://www.npmjs.com/package/quay)
+[![npm: v0.1.0](https://img.shields.io/badge/npm-v0.1.0-purple.svg)](https://www.npmjs.com/package/quay-ai-factory)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
 [![Svelte 5](https://img.shields.io/badge/Svelte-5-ff3e00.svg)](https://svelte.dev/)
 
