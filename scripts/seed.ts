@@ -32,11 +32,11 @@ async function seed() {
 
   // Create agents
   const agentData = [
-    { name: 'Alice Coder', type: 'CODER', provider: 'anthropic', model: 'claude-sonnet-4-20250514', status: 'IDLE' },
-    { name: 'Bob Reviewer', type: 'REVIEWER', provider: 'openai', model: 'gpt-4o', status: 'IDLE' },
-    { name: 'Carol Security', type: 'SECURITY', provider: 'anthropic', model: 'claude-3-5-sonnet-latest', status: 'IDLE' },
-    { name: 'Dave Architect', type: 'ARCHITECT', provider: 'anthropic', model: 'claude-3-5-sonnet-latest', status: 'IDLE' },
-    { name: 'Eve Deployer', type: 'DEPLOYER', provider: 'groq', model: 'llama-3.3-70b-versatile', status: 'OFFLINE' },
+    { name: 'Alice Coder', type: 'CODER', provider: 'anthropic', model: 'claude-sonnet-4-20250514', status: 'IDLE', baseURL: process.env.ANTHROPIC_API_URL ?? 'https://api.anthropic.com' },
+    { name: 'Bob Reviewer', type: 'REVIEWER', provider: 'openai', model: 'gpt-4o', status: 'IDLE', baseURL: 'https://api.openai.com' },
+    { name: 'Carol Security', type: 'SECURITY', provider: 'anthropic', model: 'claude-3-5-sonnet-latest', status: 'IDLE', baseURL: process.env.ANTHROPIC_API_URL ?? 'https://api.anthropic.com' },
+    { name: 'Dave Architect', type: 'ARCHITECT', provider: 'anthropic', model: 'claude-3-5-sonnet-latest', status: 'IDLE', baseURL: process.env.ANTHROPIC_API_URL ?? 'https://api.anthropic.com' },
+    { name: 'Eve Deployer', type: 'DEPLOYER', provider: 'groq', model: 'llama-3.3-70b-versatile', status: 'OFFLINE', baseURL: 'https://api.groq.com' },
   ];
 
   const agentIds: string[] = [];
@@ -45,7 +45,7 @@ async function seed() {
     agentIds.push(id);
     dbq.insert('agents', {
       id, name: a.name, type: a.type, provider: a.provider, model: a.model,
-      status: a.status, capacity: 2, pool_size: 1, config: '{}', created_at: now,
+      status: a.status, capacity: 2, pool_size: 1, config: JSON.stringify({ baseURL: a.baseURL, temperature: 0.2 }), created_at: now,
     });
   }
   console.log('[Seed] ✓ Created 5 agents');

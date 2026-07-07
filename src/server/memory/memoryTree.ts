@@ -5,7 +5,6 @@
 // ============================================================
 
 import { dbq } from '../db/index.js';
-import { eq, desc, and, gt } from 'drizzle-orm';
 import type { Run, Task } from '../../lib/types/index.js';
 
 // ----------------------------------------------------------------

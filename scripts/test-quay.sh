@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 # Quay — Full Test Suite
 
+# Use QUAY_DB_PATH env var or default to ./quay.db (relative to repo root)
+QUAY_DB_PATH="${QUAY_DB_PATH:-$(cd "$(dirname "$0")/.." && pwd)/quay.db}"
+
 BASE="http://localhost:3001"
 AUTH="Authorization: Bearer quay-dev-key"
 AUTH_DENIED="Authorization: Bearer wrong-key-xyz"
-PROJECT_ID=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM projects LIMIT 1")
-AGENT_ID=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM agents LIMIT 1")
-DONE_TASK=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='DONE' LIMIT 1")
-BACKLOG_TASK=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='BACKLOG' LIMIT 1")
-QUEUED_TASK=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='QUEUED' LIMIT 1")
-REVIEW_TASK=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='REVIEW' LIMIT 1")
+PROJECT_ID=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM projects LIMIT 1")
+AGENT_ID=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM agents LIMIT 1")
+DONE_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='DONE' LIMIT 1")
+BACKLOG_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='BACKLOG' LIMIT 1")
+QUEUED_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='QUEUED' LIMIT 1")
+REVIEW_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='REVIEW' LIMIT 1")
 
 pass=0; fail=0; skip=0
 
@@ -107,14 +110,14 @@ echo "$body" | python3 -c "import sys,json; d=json.load(sys.stdin); states=[c['s
   report PASS "TEST-029" "GET kanban → all 7 state columns" || report FAIL "TEST-029" "Kanban missing columns"
 
 # Transitions — each test re-queries to avoid stale state
-BL=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='BACKLOG' LIMIT 1")
+BL=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='BACKLOG' LIMIT 1")
 [ -n "$BL" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"SUBMIT"}' "$BASE/api/tasks/$BL/transition")
   echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='QUEUED'" 2>/dev/null && \
     report PASS "TEST-031" "BACKLOG→QUEUED via SUBMIT" || report FAIL "TEST-031" "BACKLOG→QUEUED failed: $r"
 } || report SKIP "TEST-031" "No BACKLOG task"
 
-Q=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='QUEUED' LIMIT 1")
+Q=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='QUEUED' LIMIT 1")
 [ -n "$Q" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d "{\"event\":\"ASSIGN\",\"agentId\":\"$AGENT_ID\"}" "$BASE/api/tasks/$Q/transition")
   echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='IN_PROGRESS'" 2>/dev/null && \
@@ -165,21 +168,21 @@ echo "━━━ DATA INTEGRITY ━━━━━━━━━━━━━━━━�
     report PASS "DATA-001" "BACKLOG→QUEUED" || report FAIL "DATA-001" "Transition failed: $r"
 } || report SKIP "DATA-001" "No BACKLOG task"
 
-Q_TASK=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='QUEUED' LIMIT 1")
+Q_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='QUEUED' LIMIT 1")
 [ -n "$Q_TASK" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d "{\"event\":\"ASSIGN\",\"agentId\":\"$AGENT_ID\"}" "$BASE/api/tasks/$Q_TASK/transition")
   echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='IN_PROGRESS'" 2>/dev/null && \
     report PASS "DATA-002" "QUEUED→IN_PROGRESS ASSIGN" || report FAIL "DATA-002" "ASSIGN failed: $r"
 } || report SKIP "DATA-002" "No QUEUED task"
 
-IP_TASK=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='IN_PROGRESS' LIMIT 1")
+IP_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='IN_PROGRESS' LIMIT 1")
 [ -n "$IP_TASK" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"STEP_COMPLETE"}' "$BASE/api/tasks/$IP_TASK/transition")
   echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='REVIEW'" 2>/dev/null && \
     report PASS "DATA-003" "IN_PROGRESS→REVIEW STEP_COMPLETE" || report FAIL "DATA-003" "STEP_COMPLETE failed: $r"
 } || report SKIP "DATA-003" "No IN_PROGRESS task"
 
-REV_TASK=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='REVIEW' LIMIT 1")
+REV_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='REVIEW' LIMIT 1")
 [ -n "$REV_TASK" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"APPROVE"}' "$BASE/api/tasks/$REV_TASK/transition")
   echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='DONE'" 2>/dev/null && \
@@ -190,14 +193,14 @@ REV_TASK=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='
     report PASS "DATA-005" "REVIEW→IN_PROGRESS REJECT" || report FAIL "DATA-005" "REJECT failed: $r2"
 } || report SKIP "DATA-004/005" "No REVIEW task"
 
-FAILED_T=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='FAILED' LIMIT 1")
+FAILED_T=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='FAILED' LIMIT 1")
 [ -n "$FAILED_T" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"RETRY"}' "$BASE/api/tasks/$FAILED_T/transition")
   echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='QUEUED'" 2>/dev/null && \
     report PASS "DATA-007" "FAILED→QUEUED RETRY" || report FAIL "DATA-007" "RETRY failed: $r"
 } || report SKIP "DATA-007" "No FAILED task"
 
-BLOCKED_T=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='BLOCKED' LIMIT 1")
+BLOCKED_T=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='BLOCKED' LIMIT 1")
 [ -n "$BLOCKED_T" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"UNBLOCK"}' "$BASE/api/tasks/$BLOCKED_T/transition")
   echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='QUEUED'" 2>/dev/null && \
@@ -210,13 +213,13 @@ BLOCKED_T=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state=
   check "400" "$s" "DATA-009" "Invalid DONE→IN_PROGRESS → 400"
 } || report SKIP "DATA-009" "No DONE task"
 
-BL_TASK=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='BACKLOG' LIMIT 1")
+BL_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='BACKLOG' LIMIT 1")
 [ -n "$BL_TASK" ] && {
   s=$(http_status -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"STEP_COMPLETE"}' "$BASE/api/tasks/$BL_TASK/transition")
   check "400" "$s" "DATA-010" "Invalid BACKLOG→REVIEW → 400"
 } || report SKIP "DATA-010" "No BACKLOG task"
 
-Q2_TASK=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='QUEUED' LIMIT 1")
+Q2_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='QUEUED' LIMIT 1")
 [ -n "$Q2_TASK" ] && {
   s=$(http_status -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"SUBMIT"}' "$BASE/api/tasks/$Q2_TASK/transition")
   check "400" "$s" "DATA-011" "Invalid QUEUED→SUBMIT → 400"
@@ -241,20 +244,20 @@ echo "$t_p10" | python3 -c "import sys,json; d=json.load(sys.stdin); assert 'id'
   report PASS "DATA-013" "Create task priority=10 → accepted" || report FAIL "DATA-013" "priority=10 failed"
 
 # completed_at on DONE
-DONE_T=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='DONE' LIMIT 1")
+DONE_T=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='DONE' LIMIT 1")
 [ -n "$DONE_T" ] && {
-  COMP_AT=$(sqlite3 /Users/Subho/quay/quay.db "SELECT completed_at FROM tasks WHERE id='$DONE_T'")
+  COMP_AT=$(sqlite3 "$QUAY_DB_PATH" "SELECT completed_at FROM tasks WHERE id='$DONE_T'")
   [ -n "$COMP_AT" ] && [ "$COMP_AT" != "0" ] && [ "$COMP_AT" != "" ] && \
     report PASS "DATA-026" "DONE task has completed_at set" || report FAIL "DATA-026" "DONE task completed_at NULL"
 }
 
 # Audit events on transition
-AUDIT_BEFORE=$(sqlite3 /Users/Subho/quay/quay.db "SELECT COUNT(*) FROM audit_events")
+AUDIT_BEFORE=$(sqlite3 "$QUAY_DB_PATH" "SELECT COUNT(*) FROM audit_events")
 T_AUDIT=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" \
   -d '{"title":"Audit test"}' "$BASE/api/projects/$PROJECT_ID/tasks" | python3 -c "import sys,json; print(json.load(sys.stdin).get('id',''))" 2>/dev/null)
 if [ -n "$T_AUDIT" ]; then
   http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"SUBMIT"}' "$BASE/api/tasks/$T_AUDIT/transition" > /dev/null
-  AUDIT_AFTER=$(sqlite3 /Users/Subho/quay/quay.db "SELECT COUNT(*) FROM audit_events")
+  AUDIT_AFTER=$(sqlite3 "$QUAY_DB_PATH" "SELECT COUNT(*) FROM audit_events")
   [ "$AUDIT_AFTER" -gt "$AUDIT_BEFORE" ] && \
     report PASS "DATA-024" "Transition logs audit_event" || report FAIL "DATA-024" "audit_events not incremented"
 fi
@@ -342,7 +345,7 @@ if [ -n "$RUN_TASK" ]; then
 fi
 
 # REVIEW→APPROVE→DONE
-REV_D=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='REVIEW' LIMIT 1")
+REV_D=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='REVIEW' LIMIT 1")
 [ -n "$REV_D" ] && {
   http_body -X POST -H "$AUTH" -H "Content-Type: application/json" \
     -d '{"event":"APPROVE","userId":"test"}' "$BASE/api/tasks/$REV_D/transition" > /dev/null
@@ -351,12 +354,12 @@ REV_D=$(sqlite3 /Users/Subho/quay/quay.db "SELECT id FROM tasks WHERE state='REV
 }
 
 # Audit count
-AUD_BEFORE=$(sqlite3 /Users/Subho/quay/quay.db "SELECT COUNT(*) FROM audit_events")
+AUD_BEFORE=$(sqlite3 "$QUAY_DB_PATH" "SELECT COUNT(*) FROM audit_events")
 T_AUD2=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" \
   -d '{"title":"Audit 2"}' "$BASE/api/projects/$PROJECT_ID/tasks" | python3 -c "import sys,json; print(json.load(sys.stdin).get('id',''))" 2>/dev/null)
 if [ -n "$T_AUD2" ]; then
   http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"SUBMIT"}' "$BASE/api/tasks/$T_AUD2/transition" > /dev/null
-  AUD_AFTER=$(sqlite3 /Users/Subho/quay/quay.db "SELECT COUNT(*) FROM audit_events")
+  AUD_AFTER=$(sqlite3 "$QUAY_DB_PATH" "SELECT COUNT(*) FROM audit_events")
   [ "$AUD_AFTER" -gt "$AUD_BEFORE" ] && report PASS "OPS-030" "Transition creates audit_events" || report FAIL "OPS-030" "audit_events unchanged"
 fi
 

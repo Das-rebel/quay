@@ -5,6 +5,7 @@
 
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { z } from 'zod';
 import { dbq } from './db/index.js';
 import { mcpRegistry } from './mcp/index.js';
 import { sseBroadcaster } from './sse/index.js';
@@ -15,8 +16,68 @@ import { v4 as uuidv4 } from 'uuid';
 
 const app = new Hono();
 
-// ── Middleware ────────────────────────────────────────────────
-app.use('*', cors({ origin: '*', allowHeaders: ['*'], allowMethods: ['*'] }));
+// ── CORS — restrict origins in production ─────────────────────
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(',') ?? ['*'];
+app.use('*', cors({
+  origin: (origin: string) => {
+    if (ALLOWED_ORIGINS[0] === '*' || !origin) return '*';
+    return ALLOWED_ORIGINS.includes(origin) ? origin : '';
+  },
+  allowHeaders: ['*'],
+  allowMethods: ['*'],
+}));
+
+// ── Zod Schemas for Input Validation ──────────────────────────
+const CreateProjectSchema = z.object({
+  name: z.string().min(1, 'name is required'),
+  repoUrl: z.string().url().optional(),
+  description: z.string().optional(),
+});
+
+const CreateAgentSchema = z.object({
+  name: z.string().min(1),
+  type: z.string().min(1),
+  provider: z.string().min(1),
+  model: z.string().min(1),
+  capacity: z.number().int().min(1).optional(),
+  poolSize: z.number().int().min(1).optional(),
+  config: z.record(z.string(), z.unknown()).optional(),
+});
+
+const UpdateAgentStatusSchema = z.object({
+  status: z.string().min(1),
+});
+
+const CreateTaskSchema = z.object({
+  title: z.string().min(1, 'title is required'),
+  description: z.string().optional(),
+  priority: z.number().int().min(1).max(999).optional(),
+  schedulingPolicy: z.enum(['FAIR_SHARE', 'STRICT_PRIORITY', 'SHORTEST_JOB_FIRST']).optional(),
+});
+
+const TaskTransitionSchema = z.object({
+  event: z.enum(['SUBMIT', 'ASSIGN', 'STEP_COMPLETE', 'APPROVE', 'REJECT', 'RETRY', 'UNBLOCK', 'TIMEOUT']),
+  userId: z.string().optional(),
+  agentId: z.string().uuid().optional(),
+});
+
+const RunPipelineSchema = z.object({
+  pipelineId: z.string().min(1),
+});
+
+const TestEventSchema = z.object({
+  type: z.enum(['task:created', 'task:state_change', 'run:started', 'run:progress', 'run:completed', 'run:failed', 'agent:status', 'sandbox:status', 'sse:heartbeat']),
+  data: z.record(z.string(), z.unknown()),
+});
+
+function validate<T>(schema: z.ZodSchema<T>, data: unknown): { success: true; data: T } | { success: false; error: string } {
+  const result = schema.safeParse(data);
+  if (!result.success) {
+    const issues = result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
+    return { success: false, error: issues };
+  }
+  return { success: true, data: result.data };
+}
 app.use('*', async (c, next) => {
   const start = Date.now();
   await next();
@@ -77,9 +138,11 @@ app.get('/sse', (c) => {
 
 // ── Projects ────────────────────────────────────────────────────
 app.post('/api/projects', async (c) => {
-  const body = await c.req.json<{ name: string; repoUrl?: string; description?: string }>();
+  const parsed = validate(CreateProjectSchema, await c.req.json());
+  if (!parsed.success) return c.json({ error: parsed.error }, 400);
+  const { name, repoUrl, description } = parsed.data;
   const id = uuidv4();
-  dbq.insert('projects', { id, name: body.name, repo_url: body.repoUrl ?? null, description: body.description ?? null, created_at: Date.now() });
+  dbq.insert('projects', { id, name, repo_url: repoUrl ?? null, description: description ?? null, created_at: Date.now() });
   return c.json({ id });
 });
 
@@ -101,37 +164,42 @@ app.get('/api/agents', async (c) => {
 });
 
 app.post('/api/agents', async (c) => {
-  const body = await c.req.json<{ name: string; type: string; provider: string; model: string; capacity?: number; poolSize?: number; config?: Record<string, unknown> }>();
+  const parsed = validate(CreateAgentSchema, await c.req.json());
+  if (!parsed.success) return c.json({ error: parsed.error }, 400);
+  const { name, type, provider, model, capacity, poolSize, config } = parsed.data;
   const id = uuidv4();
   dbq.insert('agents', {
-    id, name: body.name, type: body.type, provider: body.provider, model: body.model,
-    status: 'IDLE', capacity: body.capacity ?? 1, pool_size: body.poolSize ?? 1,
-    config: JSON.stringify(body.config ?? {}), created_at: Date.now(),
+    id, name, type, provider, model,
+    status: 'IDLE', capacity: capacity ?? 1, pool_size: poolSize ?? 1,
+    config: JSON.stringify(config ?? {}), created_at: Date.now(),
   });
   return c.json({ id });
 });
 
 app.patch('/api/agents/:id/status', async (c) => {
-  const { status } = await c.req.json<{ status: string }>();
-  dbq.update('agents', { status }, { id: c.req.param('id') });
+  const parsed = validate(UpdateAgentStatusSchema, await c.req.json());
+  if (!parsed.success) return c.json({ error: parsed.error }, 400);
+  dbq.update('agents', { status: parsed.data.status }, { id: c.req.param('id') });
   return c.json({ ok: true });
 });
 
 // ── Tasks ──────────────────────────────────────────────────────
 app.post('/api/projects/:projectId/tasks', async (c) => {
-  const body = await c.req.json<{ title: string; description?: string; priority?: number; schedulingPolicy?: string }>();
+  const parsed = validate(CreateTaskSchema, await c.req.json());
+  if (!parsed.success) return c.json({ error: parsed.error }, 400);
+  const { title, description, priority, schedulingPolicy } = parsed.data;
   const projectId = c.req.param('projectId');
   const id = uuidv4();
   const now = Date.now();
   dbq.insert('tasks', {
-    id, project_id: projectId, title: body.title,
-    description: body.description ?? '',
-    state: 'BACKLOG', priority: body.priority ?? 5,
-    scheduling_policy: body.schedulingPolicy ?? 'FAIR_SHARE',
+    id, project_id: projectId, title,
+    description: description ?? '',
+    state: 'BACKLOG', priority: priority ?? 5,
+    scheduling_policy: schedulingPolicy ?? 'FAIR_SHARE',
     assigned_agent_id: null, correlation_id: null, parent_task_id: null,
     created_at: now, updated_at: now, completed_at: null,
   });
-  sseBroadcaster.broadcast('task:created', { taskId: id, projectId, title: body.title });
+  sseBroadcaster.broadcast('task:created', { taskId: id, projectId, title });
   return c.json({ id, state: 'BACKLOG' });
 });
 
@@ -160,7 +228,9 @@ app.get('/api/projects/:projectId/kanban', async (c) => {
 
 // Task state transitions
 app.post('/api/tasks/:id/transition', async (c) => {
-  const { event, userId } = await c.req.json<{ event: TaskEvent; userId?: string }>();
+  const parsed = validate(TaskTransitionSchema, await c.req.json());
+  if (!parsed.success) return c.json({ error: parsed.error }, 400);
+  const { event, userId, agentId } = parsed.data;
   const taskId = c.req.param('id');
   const [task] = dbq.select<{ id: string; state: string; project_id: string }>('tasks', { id: taskId });
   if (!task) return c.json({ error: 'Not found' }, 404);
@@ -183,6 +253,7 @@ app.post('/api/tasks/:id/transition', async (c) => {
     state: nextState,
     updated_at: now,
     ...(nextState === 'DONE' ? { completed_at: now } : {}),
+    ...(event === 'ASSIGN' && agentId ? { assigned_agent_id: agentId } : {}),
   }, { id: taskId });
 
   dbq.insert('transitions', {
@@ -206,7 +277,9 @@ app.post('/api/tasks/:id/transition', async (c) => {
 
 // ── Pipeline Execution ──────────────────────────────────────────
 app.post('/api/tasks/:taskId/run', async (c) => {
-  const { pipelineId } = await c.req.json<{ pipelineId: string }>();
+  const parsed = validate(RunPipelineSchema, await c.req.json());
+  if (!parsed.success) return c.json({ error: parsed.error }, 400);
+  const { pipelineId } = parsed.data;
   const taskId = c.req.param('taskId');
   const [task] = dbq.select<{ id: string; repo_url: string }>('tasks', { id: taskId });
   if (!task) return c.json({ error: 'Not found' }, 404);
@@ -214,8 +287,10 @@ app.post('/api/tasks/:taskId/run', async (c) => {
   const pipeline = PIPELINE_TEMPLATES[pipelineId];
   if (!pipeline) return c.json({ error: `Unknown pipeline: ${pipelineId}` }, 400);
 
-  pipelineExecutor.execute(taskId, pipeline, task.repo_url ?? null).catch(console.error);
-  return c.json({ message: 'Pipeline started', taskId, pipeline: pipeline.name });
+  // Return a runId immediately so client can poll /api/runs/:id
+  const runId = uuidv4();
+  pipelineExecutor.execute(taskId, pipeline, task.repo_url ?? null, runId).catch(console.error);
+  return c.json({ message: 'Pipeline started', taskId, pipeline: pipeline.name, runId });
 });
 
 // ── Runs ───────────────────────────────────────────────────────
@@ -233,7 +308,7 @@ app.get('/api/runs/:id', async (c) => {
 
 // ── Dashboard Stats ─────────────────────────────────────────────
 app.get('/api/stats', async (c) => {
-  const projectId = c.req.param('projectId');
+  const projectId = c.req.query('projectId');
   const allTasks = projectId
     ? dbq.select<Record<string, unknown>>('tasks', { project_id: projectId })
     : dbq.select<Record<string, unknown>>('tasks');
@@ -269,10 +344,16 @@ app.get('/api/mcp/tools', async (c) => {
 });
 
 // ── SSE Test ───────────────────────────────────────────────────
+// Protected: only allowed in dev mode or with valid API key
 app.post('/api/test-event', async (c) => {
-  const { type, data } = await c.req.json<{ type: string; data: Record<string, unknown> }>();
-  sseBroadcaster.broadcast(type as any, data);
-  return c.json({ ok: true, clients: sseBroadcaster.clientCount });
+  if (API_KEY === 'quay-dev-key') {
+    const parsed = validate(TestEventSchema, await c.req.json());
+    if (!parsed.success) return c.json({ error: parsed.error }, 400);
+    const { type, data } = parsed.data;
+    sseBroadcaster.broadcast(type, data);
+    return c.json({ ok: true, clients: sseBroadcaster.clientCount });
+  }
+  return c.json({ error: 'Disabled in production' }, 403);
 });
 
 // ── 404 ─────────────────────────────────────────────────────────

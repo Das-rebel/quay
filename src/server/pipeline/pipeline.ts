@@ -120,7 +120,8 @@ export class PipelineExecutor {
   async execute(
     taskId: string,
     pipeline: Pipeline,
-    projectRepoUrl: string | null
+    projectRepoUrl: string | null,
+    runId?: string
   ): Promise<PipelineRunResult> {
     const startTime = Date.now();
     const errors: string[] = [];
@@ -147,15 +148,16 @@ export class PipelineExecutor {
       }
 
       const sandboxId = uuidv4();
-      dbq.insert('sandboxes', { id: sandboxId, run_id: '', type: 'DOCKER', status: 'READY', created_at: Date.now() });
-
       const runId = uuidv4();
+
+      // Insert run first to satisfy FOREIGN KEY from sandboxes
       dbq.insert('runs', {
         id: runId, task_id: taskId, agent_id: agent.id, state: 'RUNNING',
         sandbox_id: sandboxId, started_at: Date.now(), cost: 0, tokens_in: 0, tokens_out: 0,
       });
 
-      dbq.update('sandboxes', { run_id: runId, status: 'RUNNING' }, { id: sandboxId });
+      dbq.insert('sandboxes', { id: sandboxId, run_id: runId, type: 'DOCKER', status: 'READY', created_at: Date.now() });
+
       dbq.update('agents', { status: 'BUSY' }, { id: agent.id });
 
       dbq.insert('audit_events', {
@@ -193,8 +195,8 @@ export class PipelineExecutor {
     return { pipelineId: pipeline.id, taskId, stagesCompleted: success ? pipeline.stages.length : errors.length, totalStages: pipeline.stages.length, success, totalCost, durationMs, errors };
   }
 
-  private findAgent(type: string): { id: string; name: string; type: string; status: string; provider: string; model: string } | null {
-    const candidates = dbq.select<{ id: string; name: string; type: string; status: string; provider: string; model: string }>('agents', { type });
+  private findAgent(type: string): { id: string; name: string; type: string; status: string; provider: string; model: string; config: string } | null {
+    const candidates = dbq.select<{ id: string; name: string; type: string; status: string; provider: string; model: string; config: string }>('agents', { type });
     if (candidates.length === 0) return null;
     const idle = candidates.filter(a => a.status === 'IDLE');
     if (idle.length === 0) return null;

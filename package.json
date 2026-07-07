@@ -76,10 +76,8 @@
     "@modelcontextprotocol/sdk": "^1.29.0",
     "adaptive-memory-multi-model-router": "^2.14.60",
     "better-sqlite3": "^12.11.1",
-    "bullmq": "^5.79.2",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.12.27",
-    "ioredis": "^5.11.1",
     "uuid": "^14.0.1",
     "zod": "^4.4.3"
   }

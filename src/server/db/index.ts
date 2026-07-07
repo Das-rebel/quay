@@ -25,10 +25,18 @@ db.exec('PRAGMA foreign_keys = ON');
 
 // ── Thin query builder using bun:sqlite ───────────────────────
 // Provides drizzle-orm-compatible query interface via bun:sqlite
+// NOTE: orderBy is whitelist-validated to prevent SQL injection.
 
 type TableName = 'projects' | 'agents' | 'tasks' | 'runs' | 'step_attempts' | 'sandboxes' | 'audit_events' | 'transitions' | 'scheduler_decisions';
 
-function table(name: TableName) { return name; }
+const ALLOWED_ORDER_COLUMNS: Set<string> = new Set([
+  'id', 'created_at', 'updated_at', 'name', 'state', 'priority',
+  'started_at', 'completed_at', 'timestamp',
+]);
+
+function isValidOrderBy(col: string): boolean {
+  return ALLOWED_ORDER_COLUMNS.has(col);
+}
 
 function whereClause(conditions: Record<string, unknown> | undefined): { sql: string; params: unknown[] } {
   if (!conditions || Object.keys(conditions).length === 0) return { sql: '', params: [] };
@@ -51,8 +59,10 @@ export const dbq = {
 
   select<T extends Record<string, unknown>>(tableName: TableName, conditions?: Partial<T>, orderBy?: string, limit?: number): T[] {
     const { sql: whereSql, params: whereParams } = whereClause(conditions as Record<string, unknown>);
-    const order = orderBy ? ` ORDER BY ${orderBy}` : '';
-    const lim = limit ? ` LIMIT ${limit}` : '';
+    // Whitelist validation for orderBy — prevent SQL injection
+    const order = orderBy && isValidOrderBy(orderBy) ? ` ORDER BY ${orderBy}` : '';
+    // Validate limit is a positive integer
+    const lim = (limit !== undefined && Number.isInteger(limit) && limit > 0) ? ` LIMIT ${limit}` : '';
     const finalSql = `SELECT * FROM ${tableName}${whereSql}${order}${lim}`;
     return db.prepare(finalSql).all(...whereParams) as T[];
   },
