@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { get } from 'svelte/store';
-  import { tasks, agents, stats, kanbanColumns, sseConnected, dataMode, loadMockData, createTask, transitionTask, runPipeline } from '$lib/stores/quay';
+  import { tasks, agents, stats, kanbanColumns, sseConnected, dataMode, loadMockData, createTask, transitionTask, runPipeline, loadTasks, loadAgents, loadStats } from '$lib/stores/quay';
   import type { Task } from '$lib/types/index.js';
 
   // ── State (Svelte 5 runes) ─────────────────────────────────
@@ -275,8 +275,8 @@
 
 <!-- New Task Modal -->
 {#if showNewTask}
-  <div class="modal-overlay" onclick={() => showNewTask = false} role="presentation">
-    <div class="modal" onclick={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
+  <div class="modal-overlay" onclick={() => showNewTask = false} onkeydown={(e) => e.key === 'Escape' && (showNewTask = false)} role="presentation">
+    <div class="modal" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
       <div class="modal-header">
         <h3>New Task</h3>
         <button class="modal-close" onclick={() => showNewTask = false}>×</button>
@@ -301,8 +301,8 @@
 
 <!-- Task Detail Modal -->
 {#if selectedTask}
-  <div class="modal-overlay" onclick={() => selectedTask = null} role="presentation">
-    <div class="modal modal-lg" onclick={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
+  <div class="modal-overlay" onclick={() => selectedTask = null} onkeydown={(e) => e.key === 'Escape' && (selectedTask = null)} role="presentation">
+    <div class="modal modal-lg" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
       <div class="modal-header">
         <h3>{selectedTask.title}</h3>
         <button class="modal-close" onclick={() => selectedTask = null}>×</button>

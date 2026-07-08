@@ -23,7 +23,14 @@
     "cost-transparency",
     "ai-audit-trail",
     "swe-agent",
-    "mission-control"
+    "mission-control",
+    "agentic-ai",
+    "ai-workflow-automation",
+    "llm-agent-platform",
+    "self-hosted-llm",
+    "ai-pipeline-framework",
+    "autonomous-coding",
+    "ai-deployment"
   ],
   "license": "MIT",
   "private": false,

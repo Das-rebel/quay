@@ -161,9 +161,10 @@ r=$(http_body -X PATCH -H "$AUTH" -H "Content-Type: application/json" -d '{"stat
 echo ""
 echo "━━━ DATA INTEGRITY ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Valid state transitions
-[ -n "$BACKLOG_TASK" ] && {
-  r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"SUBMIT"}' "$BASE/api/tasks/$BACKLOG_TASK/transition")
+# Valid state transitions — fetch FRESH task IDs each time to avoid staleness
+BL_DATA=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='BACKLOG' LIMIT 1")
+[ -n "$BL_DATA" ] && {
+  r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"SUBMIT"}' "$BASE/api/tasks/$BL_DATA/transition")
   echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='QUEUED'" 2>/dev/null && \
     report PASS "DATA-001" "BACKLOG→QUEUED" || report FAIL "DATA-001" "Transition failed: $r"
 } || report SKIP "DATA-001" "No BACKLOG task"
@@ -187,11 +188,24 @@ REV_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='REVIEW' LI
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"APPROVE"}' "$BASE/api/tasks/$REV_TASK/transition")
   echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='DONE'" 2>/dev/null && \
     report PASS "DATA-004" "REVIEW→DONE APPROVE" || report FAIL "DATA-004" "APPROVE failed: $r"
+} || report SKIP "DATA-004" "No REVIEW task"
 
-  r2=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"REJECT"}' "$BASE/api/tasks/$REV_TASK/transition")
-  echo "$r2" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='IN_PROGRESS'" 2>/dev/null && \
-    report PASS "DATA-005" "REVIEW→IN_PROGRESS REJECT" || report FAIL "DATA-005" "REJECT failed: $r2"
-} || report SKIP "DATA-004/005" "No REVIEW task"
+# DATA-005: create a dedicated task, walk to REVIEW, then test REJECT
+REV_REJECT=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" \
+  -d '{"title":"DATA-005 reject target"}' "$BASE/api/projects/$PROJECT_ID/tasks" | python3 -c "import sys,json; print(json.load(sys.stdin).get('id',''))" 2>/dev/null)
+if [ -n "$REV_REJECT" ]; then
+  http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"SUBMIT"}' "$BASE/api/tasks/$REV_REJECT/transition" > /dev/null
+  http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d "{\"event":"ASSIGN","agentId":"$AGENT_ID"}" "$BASE/api/tasks/$REV_REJECT/transition" > /dev/null
+  http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"STEP_COMPLETE"}' "$BASE/api/tasks/$REV_REJECT/transition" > /dev/null
+  r2=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"REJECT"}' "$BASE/api/tasks/$REV_REJECT/transition")
+  if echo "$r2" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='IN_PROGRESS'" 2>/dev/null; then
+    report PASS "DATA-005" "REVIEW→IN_PROGRESS REJECT"
+  else
+    report FAIL "DATA-005" "REJECT failed: $r2"
+  fi
+else
+  report SKIP "DATA-005" "Could not create reject target task"
+fi
 
 FAILED_T=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='FAILED' LIMIT 1")
 [ -n "$FAILED_T" ] && {
@@ -368,12 +382,18 @@ echo ""
 echo "━━━ PRODUCT JOURNEY ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Dashboard: check via API data + rendered HTML (client-side SPA, check JS imports exist)
-BODY=$(curl -s "http://localhost:5173/")
-echo "$BODY" | grep -q "SvelteKit\|DOCTYPE\|html" && \
-  report PASS "JOURNEY-001" "SvelteKit HTML shell loads" || report FAIL "JOURNEY-001" "SvelteKit shell missing"
+# Gracefully skip if Vite dev server (port 5173) is not running
+BODY=$(curl -s --max-time 2 "http://localhost:5173/" 2>/dev/null)
+if [ -z "$BODY" ]; then
+  report SKIP "JOURNEY-001" "SvelteKit dev server not running (port 5173)"
+  report SKIP "JOURNEY-002" "SvelteKit dev server not running (port 5173)"
+else
+  echo "$BODY" | grep -q "SvelteKit\|DOCTYPE\|html" && \
+    report PASS "JOURNEY-001" "SvelteKit HTML shell loads" || report FAIL "JOURNEY-001" "SvelteKit shell missing"
 
-echo "$BODY" | grep -q "app\.css\|quay\|vite" && \
-  report PASS "JOURNEY-002" "CSS/app bundle referenced in HTML" || report FAIL "JOURNEY-002" "CSS bundle missing"
+  echo "$BODY" | grep -q "app\.css\|quay\|vite" && \
+    report PASS "JOURNEY-002" "CSS/app bundle referenced in HTML" || report FAIL "JOURNEY-002" "CSS bundle missing"
+fi
 
 # Verify real data via API (the dashboard fetches from API on mount)
 API_STATS=$(http_body -H "$AUTH" "$BASE/api/stats")
