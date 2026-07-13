@@ -1,0 +1,86 @@
+{
+  "name": "quay",
+  "version": "0.0.1",
+  "description": "Quay — Autonomous AI Software Factory. Self-hosted AI agents, MCP integration, customizable pipelines, real-time Mission Control dashboard, cost transparency, and full audit trails.",
+  "keywords": [
+    "ai-software-factory",
+    "autonomous-ai-agents",
+    "ai-coding-assistant",
+    "mcp",
+    "model-context-protocol",
+    "ai-pipeline",
+    "self-hosted-ai",
+    "ai-orchestration",
+    "autonomous-coding",
+    "ai-code-review",
+    "ai-security-scanning",
+    "ai-deployment",
+    "ai-devops",
+    "autonomous-software-development",
+    "ai-agent-platform",
+    "ai-agents",
+    "ai-llm-routing",
+    "cost-transparency",
+    "ai-audit-trail",
+    "swe-agent",
+    "mission-control"
+  ],
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "main": "src/server/index.ts",
+  "scripts": {
+    "dev": "vite dev",
+    "dev:all": "bun run scripts/seed.ts && bun run --cwd src/server index.ts &",
+    "server": "bun run src/server/index.ts",
+    "seed": "bun run scripts/seed.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "test": "bash scripts/test-quay.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Das-rebel/quay.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Das-rebel/quay/issues"
+  },
+  "homepage": "https://github.com/Das-rebel/quay",
+  "author": "Das-rebel",
+  "trustedDependencies": [
+    "better-sqlite3",
+    "@modelcontextprotocol/sdk"
+  ],
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^7.0.1",
+    "@sveltejs/kit": "^2.63.0",
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/bun": "^1.3.14",
+    "@types/uuid": "^10.0.0",
+    "drizzle-kit": "^0.31.10",
+    "svelte": "^5.56.1",
+    "svelte-check": "^4.6.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16"
+  },
+  "dependencies": {
+    "@auth/core": "^0.41.2",
+    "@auth/drizzle-adapter": "^1.11.2",
+    "@hono/node-server": "^2.0.8",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "adaptive-memory-multi-model-router": "^2.14.60",
+    "better-sqlite3": "^12.11.1",
+    "bullmq": "^5.79.2",
+    "drizzle-orm": "^0.45.2",
+    "hono": "^4.12.27",
+    "ioredis": "^5.11.1",
+    "uuid": "^14.0.1",
+    "zod": "^4.4.3"
+  }
+}

@@ -1,0 +1,17 @@
+node_modules/
+.svelte-kit/
+build/
+dist/
+*.db
+*.db-shm
+*.db-wal
+.env
+.env.*
+!.env.example
+.vercel
+.output/
+tmp/
+.DS_Store
+coverage/
+*.log
+bun.lockb

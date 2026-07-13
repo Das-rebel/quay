@@ -1,0 +1,600 @@
+project: autonomous_laughter_prediction
+hypothesis_count: 44
+sessions_completed: 5
+last_updated: '2026-07-12'
+inner_loop_count: 14
+outer_loop_count: 6
+current_direction: "Extracting WavLM + Prosody (21-dim) for 555 videos (~175K utterances). CRITICAL FIX: video-level vs utterance-level embeddings."
+next_hypothesis: H16.1 (WavLM+Prosody fusion on 555 videos, comedian holdout)
+hypotheses:
+  h1_1_pause_predicts_laughter:
+    hypothesis_slug: h1_1_pause_predicts_laughter
+    hypothesis_short: "H1.1: Longer pause before word \u2192 higher laughter probability"
+    status: completed
+    metric_value: 0.13
+    metric_name: Cohen's d effect size
+    baseline: 0.8
+    delta: '-0.67'
+    direction: negative
+    session: 1
+    data: 199,992 words from 26 videos, 12.6% laughter rate
+    key_learning: "Subtitle timestamps too coarse \u2014 real pause detection needs\
+      \ librosa on audio WAV files"
+    alternative_interpretation: Purandare's 0.8s threshold is real but undetectable
+      from subtitle timing
+    paper_angle: "Comedic pause is real (2\xD7 laughter rate at >1s) but invisible\
+      \ at subtitle precision"
+  h1_5_pause_alone_classifies:
+    hypothesis_slug: h1_5_pause_alone_classifies
+    hypothesis_short: "H1.5: Pause duration alone achieves F1 \u2265 0.55"
+    status: completed
+    metric_value: 0.2
+    metric_name: F1 from pause features only
+    baseline: 0.55
+    delta: '-0.35'
+    direction: negative
+    session: 4
+    data: 73,947 word-level features, per-video split, Logistic Regression
+    key_learning: "Temporal context alone insufficient \u2014 F0/energy features also\
+      \ needed"
+    paper_angle: Word-level pause features are too weak for practical use
+  h2_5_multiword_span_artifact:
+    hypothesis_slug: h2_5_multiword_span_artifact
+    hypothesis_short: "H2.5: \u226570% of laughter labels form multi-word spans"
+    status: completed
+    metric_value: 100.0
+    metric_name: Percent multi-word spans
+    baseline: 70.0
+    delta: '+30.0'
+    direction: positive_but_misleading
+    session: 2
+    data: 198 laughter spans from 15 videos, avg length 19.4 words
+    key_learning: "100% multi-word is ARTIFACT of \xB15s window labeling, not natural\
+      \ laughter structure"
+    paper_angle: Span detection is valid task reformulation but claim must be qualified
+  h4_4_biosemiotic_label_leakage:
+    hypothesis_slug: h4_4_biosemiotic_label_leakage
+    hypothesis_short: 'H4.4: Biosemiotic features improve XLM-R F1 by >0.01'
+    status: completed
+    metric_value: 0.829
+    metric_name: F1 from biosemiotic features ALONE (no text)
+    baseline: 0.819
+    delta: '+0.010'
+    direction: critical_negative_result
+    session: 2
+    data: LogisticRegression on 10 biosemiotic dimensions, NO text input
+    key_learning: "LLM-generated biosemiotic features encode labels into feature values\
+      \ \u2014 critical label leakage"
+    paper_angle: 'Publishable negative result: synthetic feature generation by LLMs
+      can invalidate ablation studies'
+  h4_5_split_leakage:
+    hypothesis_slug: h4_5_split_leakage
+    hypothesis_short: 'H4.5: Random cross-video split introduces >3% leakage vs per-show
+      split'
+    status: completed
+    metric_value: 1.9
+    metric_name: F1 gap random vs per-show (%)
+    baseline: 3.0
+    delta: '-1.1'
+    direction: negative
+    session: 2
+    data: Random split F1=0.218, per-show split F1=0.199
+    key_learning: Minor leakage exists but below 3% significance threshold
+    paper_angle: Use per-show splits for final paper; report random-split as upper
+      bound
+  h4_6_standup4ai_baseline:
+    hypothesis_slug: h4_6_standup4ai_baseline
+    hypothesis_short: 'H4.6: StandUp4AI dataset provides external benchmark for word-level
+      laughter prediction'
+    status: completed
+    metric_value: 0.73
+    metric_name: TF-IDF F1 on StandUp4AI 4-CSV subset
+    baseline: 0.25
+    delta: '+0.48'
+    direction: positive
+    session: 1
+    data: 4 CSVs, 3,207 words from StandUp4AI dataset
+    key_learning: StandUp4AI has clear signal; external benchmark available
+  h5_temporal_position_show_structure:
+    hypothesis_slug: h5_temporal_position_show_structure
+    hypothesis_short: 'H5: Laughter rate varies by position in show (peak at 20-30%)'
+    status: completed
+    metric_value: 4e-143
+    metric_name: Chi-square p-value for temporal position effect
+    baseline: 0.05
+    delta: '-1.0'
+    direction: positive
+    session: 3
+    data: Word-level temporal positions across full show durations
+    key_learning: Show-level structural pattern is real (p=4e-143) but cannot be used
+      as word-level feature
+    paper_angle: "Cannot aggregate to word-level \u2014 only utterance/show-level\
+      \ useful"
+  h6_1_f0_drop_punchline:
+    hypothesis_slug: h6_1_f0_drop_punchline
+    hypothesis_short: 'H6.1: F0 DROP at punchlines (Pickering 2009, Cohen''s d=0.24)'
+    status: completed
+    metric_value: 0.063
+    metric_name: Cohen's d for F0 mean difference
+    baseline: 0.5
+    delta: '-0.437'
+    direction: positive_but_negligible
+    session: 4
+    data: 73,947 word-level features, 7,074 laugh vs 53,401 non-laugh, 50 videos
+    statistics:
+      f0_mean_laugh: 202.0
+      f0_mean_nonlaugh: 207.1
+      f0_delta_hz: 5.0
+      p_value: 7.54e-07
+      distribution_overlap: 0.98
+    classifier_result:
+      f0_only_f1: 0.24
+      energy_only_f1: 0.24
+      f0_plus_energy_f1: 0.27
+      all_features_f1: 0.25
+    key_learning: "F0 DROP is real (p<10\u207B\u2076) but negligible (d=0.063) \u2014\
+      \ studio editing averages out prosody"
+    paper_angle: 'Textbook ''big data significance trap'': N=60K makes trivially small
+      effects statistically significant'
+  h12_2_pause_trajectory:
+    hypothesis_slug: h12_2_pause_trajectory
+    hypothesis_short: 'H12.2: Pause trajectory captures comedic timing better than
+      scalar pause'
+    status: completed
+    metric_value: 0.2
+    metric_name: F1 from pause trajectory
+    baseline: 0.55
+    delta: '-0.35'
+    direction: negative
+    session: 3
+    data: Temporal context features, Logistic Regression
+    key_learning: "Temporal context alone insufficient \u2014 need F0/energy features"
+  h6_2_energy_punctuation_laughter:
+    hypothesis_slug: h6_2_energy_punctuation_laughter
+    hypothesis_short: 'H6.2: RMS energy spikes at punchline/laughter points'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h6_3_prosody_combined_multilingual:
+    hypothesis_slug: h6_3_prosody_combined_multilingual
+    hypothesis_short: 'H6.3: F0 + energy + pause combined improves cross-lingual laughter
+      detection'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h7_1_tom_political_comedy:
+    hypothesis_slug: h7_1_tom_political_comedy
+    hypothesis_short: 'H7.1: Political comedy triggers ToM inference (audience recognizes
+      politician is target)'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h7_2_tom_social_context:
+    hypothesis_slug: h7_2_tom_social_context
+    hypothesis_short: 'H7.2: ToM features (audience sophistication, social dynamics)
+      predict laugh rate'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h7_3_tom_crosscultural:
+    hypothesis_slug: h7_3_tom_crosscultural
+    hypothesis_short: 'H7.3: ToM requirements differ across cultures (Western direct
+      vs Asian indirect)'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h7_4_tom_text_combined:
+    hypothesis_slug: h7_4_tom_text_combined
+    hypothesis_short: 'H7.4: XLM-R + ToM features outperforms XLM-R alone for political/historical
+      comedy'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h8_1_text_prosody_fusion:
+    hypothesis_slug: h8_1_text_prosody_fusion
+    hypothesis_short: 'H8.1: XLM-R text + F0/energy/pause features improves F1 beyond
+      text-only (0.82)'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: 0.82
+    target_f1: 0.85
+    session: null
+    key_learning: null
+    paper_angle: "Highest potential improvement \u2014 text ceiling vs audio failure"
+  h8_2_early_fusion_late_fusion:
+    hypothesis_slug: h8_2_early_fusion_late_fusion
+    hypothesis_short: 'H8.2: Early fusion (concatenated embeddings) outperforms late
+      fusion (ensemble)'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h8_3_crossmodal_attention:
+    hypothesis_slug: h8_3_crossmodal_attention
+    hypothesis_short: 'H8.3: Cross-modal attention mechanism captures text-prosody
+      interactions'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h8_4_crosslingual_text_prosody:
+    hypothesis_slug: h8_4_crosslingual_text_prosody
+    hypothesis_short: 'H8.4: Text+prosody fusion improves ZH/HI detection vs text-only
+      (bridge 7-14% gap)'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h12_1_chunked_architecture:
+    hypothesis_slug: h12_1_chunked_architecture
+    hypothesis_short: 'H12.1: 200ms native chunks outperform word-level alignment
+      from Whisper'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h12_3_no_vad_vs_whisper_vad:
+    hypothesis_slug: h12_3_no_vad_vs_whisper_vad
+    hypothesis_short: 'H12.3: No VAD harness (model learns boundaries natively) outperforms
+      Whisper VAD'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h12_4_ctc_loss_native_boundaries:
+    hypothesis_slug: h12_4_ctc_loss_native_boundaries
+    hypothesis_short: 'H12.4: CTC loss for native boundary learning outperforms cross-entropy
+      with forced alignment'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h13_1_byol_a_encoder:
+    hypothesis_slug: h13_1_byol_a_encoder
+    hypothesis_short: 'H13.1: BYOL-A self-supervised encoder outperforms MFCCs for
+      cross-lingual audio laughter'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    reference: "MultiLinguahah (2026) \u2014 arxiv:2605.06309"
+    key_learning: null
+    paper_angle: null
+  h13_2_isolation_forest:
+    hypothesis_slug: h13_2_isolation_forest
+    hypothesis_short: 'H13.2: Isolation Forest for unsupervised laughter detection
+      outperforms supervised on low-resource languages'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h13_3_unsupervised_label_augmentation:
+    hypothesis_slug: h13_3_unsupervised_label_augmentation
+    hypothesis_short: 'H13.3: Unsupervised label augmentation via Isolation Forest
+      pseudo-labels improves supervised training'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h13_4_multilingual_transfer:
+    hypothesis_slug: h13_4_multilingual_transfer
+    hypothesis_short: "H13.4: BYOL-A encoder enables EN\u2192ZH\u2192HI cross-lingual\
+      \ transfer with <5% F1 drop"
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h14_1_xlm_r_prosody_fusion:
+    hypothesis_slug: h14_1_xlm_r_prosody_fusion
+    hypothesis_short: 'H14.1: XLM-R text + WavLM/BYOL-A audio fusion achieves F1 >
+      0.87'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: 0.82
+    target_f1: 0.87
+    session: null
+    key_learning: null
+    paper_angle: null
+  h14_2_early_fusion_vs_late:
+    hypothesis_slug: h14_2_early_fusion_vs_late
+    hypothesis_short: 'H14.2: Early fusion (token-level concat) outperforms late fusion
+      (logit/embedding ensemble)'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h14_3_crossmodal_attention:
+    hypothesis_slug: h14_3_crossmodal_attention
+    hypothesis_short: "H14.3: Cross-modal attention layer captures text\u2194audio\
+      \ interactions beyond concat"
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: null
+    session: null
+    key_learning: null
+    paper_angle: null
+  h14_4_span_detection_fusion:
+    hypothesis_slug: h14_4_span_detection_fusion
+    hypothesis_short: 'H14.4: Span detection (IoU-F1) improves with text+audio fusion
+      vs text-only (0.880)'
+    status: pending
+    metric_value: null
+    metric_name: null
+    baseline: 0.88
+    target: 0.9
+    session: null
+    key_learning: null
+    paper_angle: null
+  h1_2_energy_punchline:
+    hypothesis_slug: h1_2_energy_punchline
+    hypothesis_short: 'H1.2: RMS energy spikes at punchlines (Bertero 2016)'
+    status: pending
+    metric_value: null
+    metric_name: Cohen's d for energy difference
+    baseline: 0.3
+    delta: null
+    session: null
+    key_learning: null
+    paper_angle: 'Energy contrast: laughter words preceded by louder audio'
+  h1_3_speech_rate_punchline:
+    hypothesis_slug: h1_3_speech_rate_punchline
+    hypothesis_short: 'H1.3: Speech rate slows before punchlines (Pickering 2009)'
+    status: pending
+    metric_value: null
+    metric_name: Words per second ratio
+    baseline: 0.2
+    delta: null
+    session: null
+    key_learning: null
+    paper_angle: Comedians slow down for emphasis before punchlines
+  h1_4_vocal_fry_uncertainty:
+    hypothesis_slug: h1_4_vocal_fry_uncertainty
+    hypothesis_short: 'H1.4: Vocal fry/creak signals uncertainty or satirical intent'
+    status: pending
+    metric_value: null
+    metric_name: Vocal fry occurrence rate
+    baseline: null
+    delta: null
+    session: null
+    key_learning: null
+    paper_angle: Voice quality markers for incongruity detection
+  h12_1_utterance_vs_word_level:
+    hypothesis_slug: h12_1_utterance_vs_word_level
+    hypothesis_short: 'H12.1: Utterance-level (3-15s) audio outperforms word-level
+      (0.3s)'
+    status: pending
+    metric_value: null
+    metric_name: F1 comparison word vs utterance level
+    baseline: 0.27
+    target: 0.6
+    session: null
+    key_learning: null
+    paper_angle: "Supra-segmental prosody only emerges at utterance level \u2014 Gillick\
+      \ 2019 F1=0.89"
+  h12_3_no_vad_vs_whisper:
+    hypothesis_slug: h12_3_no_vad_vs_whisper
+    hypothesis_short: 'H12.3: Native VAD (energy segmentation) outperforms Whisper
+      VAD'
+    status: pending
+    metric_value: null
+    metric_name: VAD boundary IoU
+    baseline: null
+    delta: null
+    session: null
+    key_learning: null
+    paper_angle: Model-learned boundaries may be more task-relevant
+  h12_4_ctc_loss_boundaries:
+    hypothesis_slug: h12_4_ctc_loss_boundaries
+    hypothesis_short: 'H12.4: CTC loss for native boundary learning outperforms cross-entropy'
+    status: pending
+    metric_value: null
+    metric_name: Boundary F1
+    baseline: null
+    delta: null
+    session: null
+    key_learning: null
+    paper_angle: CTC enables end-to-end boundary learning
+  h15_1_gate_collapse_fix:
+    hypothesis_slug: h15_1_gate_collapse_fix
+    hypothesis_short: 'H15.1: Gate bias=-2.2 prevents collapse (audio should contribute)'
+    status: pending
+    metric_value: null
+    metric_name: Gate mean during training
+    baseline: 1.0
+    target: 0.1
+    session: null
+    key_learning: null
+    paper_angle: Gate initialization is critical for multimodal learning
+results_trajectory:
+- experiment_id: run_001
+  hypothesis: H6.1
+  metric: F1
+  metric_value: 0.27
+  baseline: 0.27
+  delta: '+0.00'
+  wall_time_min: 45
+  change_summary: "F0 DROP test \u2014 Cohen's d=0.063, negligible"
+  status: NEGATIVE
+- experiment_id: run_002
+  hypothesis: H2.5
+  metric: IoU-F1
+  metric_value: 0.88
+  baseline: 0.819
+  delta: '+0.061'
+  wall_time_min: 120
+  change_summary: "Span reformulation \u2014 multi-word labels"
+  status: CONFIRMATORY
+- experiment_id: run_003
+  hypothesis: H4.4
+  metric: F1
+  metric_value: 0.829
+  baseline: 0.819
+  delta: '+0.010'
+  wall_time_min: 30
+  change_summary: "Biosemiotic leakage detection \u2014 F1=0.829 from features alone"
+  status: CRITICAL_NEGATIVE
+- experiment_id: run_004
+  hypothesis: H1.1
+  metric: Cohen's d
+  metric_value: 0.13
+  baseline: 0.8
+  delta: '-0.67'
+  wall_time_min: 20
+  change_summary: "Pause effect exists but 5\xD7 smaller than literature \u2014 subtitle\
+    \ timestamps too coarse"
+  status: NEGATIVE
+- experiment_id: run_005
+  hypothesis: H12.2
+  metric: F1
+  metric_value: 0.2
+  baseline: 0.55
+  delta: '-0.35'
+  wall_time_min: 15
+  change_summary: "Pause trajectory F1=0.20 \u2014 temporal context insufficient alone"
+  status: NEGATIVE
+summary:
+  total_hypotheses: 37
+  completed: 9
+  pending: 28
+  inconclusive: 0
+  confirmed_high_impact:
+  - slug: h4_4_biosemiotic_label_leakage
+    finding: LLM-generated features achieve F1=0.829 from features alone (label leakage)
+    paper_relevance: "Critical negative result \u2014 invalidates all biosemiotic\
+      \ ablation studies"
+  - slug: h2_5_multiword_span_artifact
+    finding: Span reformulation yields +6.1% IoU-F1 improvement
+    paper_relevance: Primary architectural contribution
+  confirmed_medium_impact:
+  - slug: h6_1_f0_drop_punchline
+    finding: "F0 DROP statistically confirmed (p<10\u207B\u2076) but negligible effect\
+      \ size (d=0.063)"
+  - slug: h5_temporal_position_show_structure
+    finding: "Show-level temporal pattern confirmed (p=4e-143) \u2014 cannot be used\
+      \ at word-level"
+  rejected:
+  - slug: h1_5_pause_alone_classifies
+    finding: Pause only achieves F1=0.20 vs 0.55 target
+  - slug: h12_2_pause_trajectory
+    finding: Temporal context insufficient alone (F1=0.20)
+  - slug: h4_5_split_leakage
+    finding: Minor leakage exists but below 3% significance threshold
+  pending_high_priority:
+  - slug: h8_1_text_prosody_fusion
+    reason: "Highest potential F1 improvement (0.82 \u2192 0.85)"
+  - slug: h13_4_multilingual_transfer
+    reason: "Cross-lingual is the real unsolved challenge (~14% EN\u2192HI gap)"
+paper_narrative:
+  current: "XLM-R word-level laughter prediction achieves F1=0.819 (IoU-F1=0.880).\
+    \ We discovered LLM-generated biosemiotic features contain critical label leakage\
+    \ (F1=0.829 from features alone), invalidating prior ablation studies. Text-only\
+    \ is the ceiling \u2014 audio adds noise at word-level. Span reformulation is\
+    \ the primary architectural contribution."
+  three_paths:
+    path_b_current: "Audio fails \u2192 'StandUp NER: Laughter as Sequence Labeling'\
+      \ \u2014 ACL SRW \u2014 2-3 weeks"
+    path_a_if_utterance_works: "Utterance audio works \u2192 'Multilingual Laughter\
+      \ via Multimodal Fusion' \u2014 EMNLP \u2014 4-6 weeks"
+    path_c_if_weak_labels_broken: "Weak labels broken \u2192 'Weak Supervision: When\
+      \ YouTube Subtitles Lie' \u2014 EMNLP eval \u2014 3-4 weeks"
+orchestra_compliance:
+  protocol_md_before_experiment: "MANDATED \u2014 all new experiments must use protocol-first"
+  research_state_yaml: "UPDATED \u2014 now matches Orchestra spec"
+  research_log_md: "STILL_MISSING \u2014 needs creation"
+  findings_md: "UPDATED \u2014 now has narrative structure"
+  experiment_trajectory_tracking: "ACTIVE \u2014 results_trajectory captures all runs"
+  per_hypothesis_directories: "CREATED \u2014 experiments/ structure established"
+  git_protocol_commits: "MANDATED \u2014 protocol + results never combined"
+
+  h9_multimodal_fusion_frozen:
+    hypothesis_slug: h9_multimodal_fusion_frozen
+    hypothesis_short: "H9: Gated fusion (frozen XLM-R + frozen WavLM) beats best single modality"
+    status: completed
+    metric_value: 0.4196
+    metric_name: Val F1 (gated fusion, best epoch)
+    baseline: 0.4155
+    delta: '+0.0041'
+    direction: marginal_positive
+    session: 5
+    data: 13,760 utterances from 68 videos, per-video split, T4 GPU
+    key_learning: "Gate converged to 1.0 within 2 epochs — model learned to fully discard frozen XLM-R text features. Fusion F1 (0.4196) ≈ WavLM-only (0.4155). Frozen multilingual text adds no complementary signal for laughter detection."
+    per_model:
+      text_only_frozen_xlmr: {f1: 0.2471, epoch: 8, params: 197378}
+      wavlm_only: {f1: 0.4155, epoch: 1, params: 213442}
+      gated_fusion: {f1: 0.4196, epoch: 1, gate: 0.993, params: 410819}
+    paper_angle: "Laughter is fundamentally acoustic: gated fusion learns to ignore multilingual text entirely. Publishable negative result demonstrating that frozen language encoders provide no signal beyond speech representations."
+    next: "H9.1: Fine-tune XLM-R layers 9-12, retrain baselines and fusion for fair comparison"
+
+# DATA BACKUP NOTE (2026-06-06)
+audio_comedy_backup:
+  location: Google Drive (rclone: gdrive:backup/audio_comedy/)
+  local_deleted: true
+  backup_progress: 87% (11.36GB of 13GB)
+  backup_incomplete_reason: Disk space constraints for macOS upgrade
+  large_files_backed_up:
+    - audio/*.wav, *.mp3 (most audio files)
+    - training_format/*.jsonl
+    - combined_features*.csv, spectral_features*.csv, prosody_features*.csv
+    - transcripts/*.json
+    - aligned_segments.jsonl, aligned_utterances*.jsonl
+  not_backed_up: ~55,658 small metadata JSON files (can be regenerated)
+  restore_command: rclone copy gdrive:backup/audio_comedy/ ~/autonomous_laughter_prediction_essential/data/audio_comedy/
+  tracking_file: data/AUDIO_COMEDY_BACKUP_LOCATION.md

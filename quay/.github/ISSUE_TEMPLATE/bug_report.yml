@@ -1,0 +1,42 @@
+name: Bug Report
+description: Report a bug in Quay
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Bug Description
+        A clear description of the bug.
+
+  - type: input
+    attributes:
+      label: Quay Version
+      placeholder: "0.0.1"
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      placeholder: What should happen
+
+  - type: textarea
+    attributes:
+      label: Actual Behavior
+      placeholder: What actually happens
+
+  - type: textarea
+    attributes:
+      label: Full Error Output
+      placeholder: |
+        ```
+        paste error here
+        ```
