@@ -1,0 +1,64 @@
+# Quay — Autonomous AI Software Factory
+
+Quay is an open-source AI Software Factory for orchestrating autonomous AI agents through customizable pipelines.
+
+## What is Quay?
+
+Quay is a self-hosted AI agents platform that writes code, reviews, security-scans, and deploys — with full cost transparency.
+
+## Key Features
+
+### 🤖 Autonomous Agent Pipelines
+- Role-based agents: Engineer → Reviewer → Security → Deployer
+- Customizable pipeline stages
+- SWE-agent loop: Observe → Plan → Act → Reflect
+
+### 🔌 MCP Integration
+- Model Context Protocol support
+- Connect any MCP-compatible tool server via stdio
+- Lazy-loaded per pipeline stage
+
+### 💰 Cost Transparency
+- Every LLM call logged with token counts and cost in USD
+- Per-task, per-project, and global cost dashboards
+- Route through A3M Router for adaptive multi-provider routing
+
+### 📊 Mission Control Dashboard
+- Real-time dark UI with KPI cards
+- Kanban board (7 states)
+- Live activity feed via SSE streaming
+
+### 🧠 Three-Tier Agent Memory
+- Short-term: Per-run cache (30-minute TTL)
+- Medium-term: 7-day lessons learned
+- Long-term: Agent capability/failure graph
+
+## Installation
+
+```bash
+npm install quay-ai-factory
+```
+
+## Use Cases
+
+- CI/CD pipelines with autonomous code review
+- Security scanning in deployment workflows  
+- Self-hosted AI coding agents
+- Multi-provider LLM routing with cost tracking
+
+## Comparison
+
+Quay is MIT-licensed, self-hosted, and cost-transparent — unlike enterprise solutions like ServiceNow AI Agents or Copilot Studio.
+
+## Links
+
+- GitHub: https://github.com/Das-rebel/quay
+- npm: https://www.npmjs.com/package/quay-ai-factory
+- Docs: https://das-rebel.github.io/quay/
+
+## Technical Stack
+
+- TypeScript/Svelte
+- SQLite for persistence
+- SSE for real-time updates
+- MCP (Model Context Protocol) for tool integration
