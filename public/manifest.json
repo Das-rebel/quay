@@ -1,0 +1,22 @@
+{
+  "name": "Quay AI Factory",
+  "short_name": "Quay",
+  "description": "Self-hosted AI factory with parallel ensemble execution and marketing intelligence",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f23",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

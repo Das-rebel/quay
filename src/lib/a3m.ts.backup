@@ -1,0 +1,141 @@
+// ============================================================
+// A3M Router Integration
+// Adaptive Multi-Model Router for intelligent routing
+// ============================================================
+
+import { isServer, config } from './config';
+
+export interface A3MRouter {
+  routeQuery(params: {
+    query: string;
+    task?: string;
+    budget?: number;
+    preferSpeed?: boolean;
+    providers?: string[];
+  }): Promise<{
+    provider: string;
+    model: string;
+    reasoning: string;
+    costEstimate: number;
+    latencyEstimate: number;
+  }>;
+  
+  getProviderHealth(): Promise<Record<string, {
+    status: 'healthy' | 'degraded' | 'down';
+    latencyMs: number;
+    costPer1kTokens: number;
+  }>>;
+  
+  trackCost(cost: number): void;
+}
+
+let routerInstance: A3MRouter | null = null;
+
+async function createRouter(): Promise<A3MRouter> {
+  const { routeQuery, getProviderHealth, CostTracker } = await import('adaptive-memory-multi-model-router');
+  
+  const costTracker = new CostTracker({
+    budget: 10.00, // $10 budget
+    onBudgetAlert: (remaining) => {
+      console.warn(`A3M Budget alert: $${remaining.toFixed(2)} remaining`);
+    },
+  });
+  
+  return {
+    async routeQuery(params) {
+      const result = await routeQuery({
+        query: params.query,
+        taskType: params.task,
+        maxBudget: params.budget,
+        preferSpeed: params.preferSpeed,
+        allowedProviders: params.providers,
+      });
+      
+      return {
+        provider: result.provider,
+        model: result.model,
+        reasoning: result.reasoning || 'A3M routed query',
+        costEstimate: result.estimatedCost || 0,
+        latencyEstimate: result.estimatedLatency || 0,
+      };
+    },
+    
+    async getProviderHealth() {
+      const health = await getProviderHealth();
+      return health;
+    },
+    
+    trackCost(cost: number) {
+      costTracker.trackCost(cost);
+    },
+  };
+}
+
+export async function getRouter(): Promise<A3MRouter> {
+  if (!isServer()) {
+    // Client-side: return mock router
+    return {
+      async routeQuery(params) {
+        return {
+          provider: 'mock',
+          model: 'mock-model',
+          reasoning: 'Client-side mock - no routing',
+          costEstimate: 0,
+          latencyEstimate: 0,
+        };
+      },
+      async getProviderHealth() {
+        return {
+          mock: { status: 'healthy', latencyMs: 0, costPer1kTokens: 0 },
+        };
+      },
+      trackCost(_cost) {},
+    };
+  }
+  
+  if (!routerInstance) {
+    routerInstance = await createRouter();
+  }
+  return routerInstance;
+}
+
+// Convenience function for simple routing decisions
+export async function routeForTask(task: string): Promise<{
+  provider: string;
+  model: string;
+  estimatedCost: number;
+}> {
+  const router = await getRouter();
+  const result = await router.routeQuery({
+    query: `Execute task: ${task}`,
+    task,
+    budget: 0.10, // 10 cents max
+    preferSpeed: true,
+  });
+  
+  return {
+    provider: result.provider,
+    model: result.model,
+    estimatedCost: result.costEstimate,
+  };
+}
+
+// Estimate cost for a given operation
+export function estimateCost(tokens: number, provider: string): number {
+  const rates: Record<string, number> = {
+    'openai/gpt-4': 0.03, // $0.03 per 1K tokens
+    'openai/gpt-3.5-turbo': 0.002,
+    'anthropic/claude-3-opus': 0.015,
+    'google/gemini-pro': 0.001,
+    'mock': 0,
+  };
+  
+  const rate = rates[provider] || 0.01;
+  return (tokens / 1000) * rate;
+}
+
+export function estimateTokens(text: string): number {
+  // Simple approximation: ~4 characters per token for English text
+  // This is a rough estimate - for production, use a proper tokenizer
+  return Math.max(1, Math.round(text.length / 4));
+}

@@ -1,0 +1,98 @@
+# Quay — Full Documentation for AI/LLM Systems
+
+## Identity
+
+Quay (npm: quay-ai-factory) is an open-source, self-hosted AI factory built with TypeScript, SvelteKit, and Bun. It orchestrates autonomous AI agents for software engineering and marketing intelligence tasks. Its core innovation is parallel multi-model ensemble execution with confidence-weighted voting — calling multiple LLMs simultaneously and merging results, rather than sequential fallback.
+
+## Architecture Overview
+
+### Layer 1: Dashboard (SvelteKit)
+- Mission Control (/) — overview of tasks, agents, costs
+- Features (/features) — AI features dashboard
+- Verification (/verification) — human-in-the-loop approval queue
+- Health (/health) — agent health monitor
+- Knowledge (/knowledge) — knowledge base manager (RAG)
+- Pipelines (/pipelines) — visual pipeline builder
+- Replay (/replay) — determinism replay (black-box recorder)
+- Cost (/cost) — cost dashboard with per-query tracking
+- Marketing (/marketing) — marketing intelligence dashboard (competitor analysis, creative generator, campaign builder, signal feed, performance)
+
+### Layer 2: Agent Runner v3
+The core orchestration engine that ties together:
+- **Routing** (src/lib/routing.ts): Auto-classifies queries by type (code, reasoning, creative, marketing) and selects optimal model. Uses A3M (adaptive-memory-multi-model-router) for cost-quality routing.
+- **Ensemble** (src/lib/ensemble.ts): Parallel multi-model execution. Calls N models simultaneously, collects responses with latency and confidence scores, then merges using voting strategy (confidence-weighted, Shapley, or simple majority).
+- **Memory** (src/lib/memory.ts): PersistentMemory implementing ReasoningBank 3-phase pipeline (select → store → induce). Trajectories are stored and memories are induced from patterns.
+- **Dialog** (src/lib/dialog.ts): MultiRoundDialogOptimizer tracks conversation history and learns which models perform best on which topics.
+
+### Layer 3: 5 AI Features
+1. **Verification** (src/server/features/verification.ts): Creates approval requests before critical actions. Auto-triggers on deploy, delete, rm, budget spend. Users approve/reject via API or dashboard.
+2. **Determinism** (src/server/features/determinism.ts): Black-box recorder that snapshots agent state after each LLM call. Creates hash-chained snapshots for exact replay.
+3. **Self-Healing** (src/server/features/selfHealing.ts): Detects 7 failure types (timeout, rate limit, hallucination, infinite loop, schema mismatch, auth failure, tool error) and applies 5 recovery strategies (retry, fallback model, simplified prompt, skip step, human escalation).
+4. **Agent RAG** (src/server/features/agentRAG.ts): Builds grounded prompts by retrieving relevant context from knowledge bases before the first LLM call.
+5. **Visual Builder** (src/server/features/visualBuilder.ts): Generates YAML pipeline definitions from natural language. Includes built-in templates for common workflows.
+
+### Layer 4: MCP Tool Registry
+- MCPServer class manages stdio-based JSON-RPC communication with tool servers
+- MCPRegistry singleton manages all registered MCP servers
+- Tools are called via `mcpRegistry.routeTool('server::tool_name', args)` or `mcpRegistry.callTool('server', 'tool', args)`
+- Supports lazy-loading (servers start on first tool call)
+
+### Layer 5: Marketing Intelligence Module (src/server/marketing/)
+- **config.ts**: Marketic MCP server configuration, marketing agent definition, marketing-specific query presets and ensemble configurations
+- **pipeline.ts**: Marketing pipeline templates (competitor-counter-campaign, brand-awareness, performance-optimization)
+- **index.ts**: Registration function that starts the marketic MCP server and merges marketing presets into global registries
+
+The marketing module communicates with Marketic (Python) via MCP stdio protocol. Quay spawns `python3 -m marketic.mcp_server` as a child process.
+
+## Marketing MCP Tools (12)
+
+| Tool | Purpose | HITL |
+|------|---------|:----:|
+| analyze_competitor | Competitive analysis with gaps + confidence | No |
+| compare_competitors | Multi-competitor feature/price matrix | No |
+| generate_creatives | Ad copy across 9 channels with hooks + confidence | No |
+| generate_social_posts | Platform-specific social content | No |
+| generate_seo_content | Blog posts, landing pages, llm.txt (GEO) | No |
+| build_campaign | Multi-channel campaign with funnel + budget | No |
+| optimize_budget | ROAS-based budget rebalancing | No |
+| analyze_positioning | 2x2 positioning map + recommendations | No |
+| collect_signals | Reddit, Trends, ProductHunt market signals | No |
+| get_attribution | Multi-touch attribution (6 models) | No |
+| generate_narrative | Brand story, thought leadership | No |
+| launch_campaign_ad | Composio ad launch (Meta/LinkedIn/Google) | YES |
+
+## Configuration
+
+Environment variables:
+- OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY — LLM provider keys
+- QUAY_DAILY_BUDGET — daily cost limit in USD (default: 10.00)
+- QUAY_QUERY_BUDGET — per-query cost limit in USD (default: 0.50)
+- QUAY_DB_PATH — SQLite database path (default: ./quay.db)
+- QUAY_PORT — server port (default: 3001 for Hono, 5173 for SvelteKit dev)
+- QUAY_API_KEY — API authentication key (default: quay-dev-key)
+- MARKETIC_DB_PATH — marketing memory database (default: ./marketic_memory.db)
+
+## Dependencies
+
+- Runtime: Bun >= 1.0
+- Framework: SvelteKit 2.0+, Hono
+- Database: bun:sqlite (SQLite, no external DB)
+- LLM Router: adaptive-memory-multi-model-router (A3M)
+- Marketing: Python 3.11+ with marketic package (optional)
+- UUID: uuid v4
+
+## Competitive Positioning
+
+Quay is the only open-source platform that combines:
+1. Parallel ensemble execution (not sequential fallback like litellm)
+2. MCP tool integration (not custom integrations like LangChain)
+3. Marketing intelligence (not just coding like SWE-agent)
+4. Self-hosted with full audit trail (not cloud-only like Icon AI CMO)
+
+## Links
+
+- Source: https://github.com/Das-rebel/quay
+- npm: https://www.npmjs.com/package/quay-ai-factory
+- Marketing engine: https://github.com/Das-rebel/marketic
+- A3M Router: https://www.npmjs.com/package/adaptive-memory-multi-model-router
+- License: MIT

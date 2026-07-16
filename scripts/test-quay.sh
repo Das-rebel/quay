@@ -113,14 +113,14 @@ echo "$body" | python3 -c "import sys,json; d=json.load(sys.stdin); states=[c['s
 BL=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='BACKLOG' LIMIT 1")
 [ -n "$BL" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"SUBMIT"}' "$BASE/api/tasks/$BL/transition")
-  echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='QUEUED'" 2>/dev/null && \
+  echo "$r" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get(\"to\")==\"QUEUED\"' 2>/dev/null && \
     report PASS "TEST-031" "BACKLOG→QUEUED via SUBMIT" || report FAIL "TEST-031" "BACKLOG→QUEUED failed: $r"
 } || report SKIP "TEST-031" "No BACKLOG task"
 
 Q=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='QUEUED' LIMIT 1")
 [ -n "$Q" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d "{\"event\":\"ASSIGN\",\"agentId\":\"$AGENT_ID\"}" "$BASE/api/tasks/$Q/transition")
-  echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='IN_PROGRESS'" 2>/dev/null && \
+  echo "$r" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get(\"to\")==\"IN_PROGRESS\"' 2>/dev/null && \
     report PASS "TEST-032" "QUEUED→IN_PROGRESS via ASSIGN" || report FAIL "TEST-032" "ASSIGN failed: $r"
 } || report SKIP "TEST-032" "No QUEUED task"
 
@@ -150,7 +150,7 @@ check "404" "$s" "TEST-064" "Unknown route → 404"
 
 # Priority boundary
 t_p999=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"title":"P999","priority":999}' "$BASE/api/projects/$PROJECT_ID/tasks")
-echo "$t_p999" | python3 -c "import sys,json; d=json.load(sys.stdin); assert 'id' in d" 2>/dev/null && \
+echo "$t_p999" | python3 -c "import sys,json; d=json.load(sys.stdin); assert isinstance(d.get("id"), str" 2>/dev/null && \
   report PASS "TEST-068" "POST task priority=999 → accepted" || report FAIL "TEST-068" "POST priority=999 rejected"
 
 # Agent status update non-string
@@ -165,28 +165,28 @@ echo "━━━ DATA INTEGRITY ━━━━━━━━━━━━━━━━�
 BL_DATA=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='BACKLOG' LIMIT 1")
 [ -n "$BL_DATA" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"SUBMIT"}' "$BASE/api/tasks/$BL_DATA/transition")
-  echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='QUEUED'" 2>/dev/null && \
+  echo "$r" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get(\"to\")==\"QUEUED\"' 2>/dev/null && \
     report PASS "DATA-001" "BACKLOG→QUEUED" || report FAIL "DATA-001" "Transition failed: $r"
 } || report SKIP "DATA-001" "No BACKLOG task"
 
 Q_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='QUEUED' LIMIT 1")
 [ -n "$Q_TASK" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d "{\"event\":\"ASSIGN\",\"agentId\":\"$AGENT_ID\"}" "$BASE/api/tasks/$Q_TASK/transition")
-  echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='IN_PROGRESS'" 2>/dev/null && \
+  echo "$r" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get(\"to\")==\"IN_PROGRESS\"' 2>/dev/null && \
     report PASS "DATA-002" "QUEUED→IN_PROGRESS ASSIGN" || report FAIL "DATA-002" "ASSIGN failed: $r"
 } || report SKIP "DATA-002" "No QUEUED task"
 
 IP_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='IN_PROGRESS' LIMIT 1")
 [ -n "$IP_TASK" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"STEP_COMPLETE"}' "$BASE/api/tasks/$IP_TASK/transition")
-  echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='REVIEW'" 2>/dev/null && \
+  echo "$r" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get(\"to\")==\"REVIEW\"' 2>/dev/null && \
     report PASS "DATA-003" "IN_PROGRESS→REVIEW STEP_COMPLETE" || report FAIL "DATA-003" "STEP_COMPLETE failed: $r"
 } || report SKIP "DATA-003" "No IN_PROGRESS task"
 
 REV_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='REVIEW' LIMIT 1")
 [ -n "$REV_TASK" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"APPROVE"}' "$BASE/api/tasks/$REV_TASK/transition")
-  echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='DONE'" 2>/dev/null && \
+  echo "$r" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get(\"to\")==\"DONE\"' 2>/dev/null && \
     report PASS "DATA-004" "REVIEW→DONE APPROVE" || report FAIL "DATA-004" "APPROVE failed: $r"
 } || report SKIP "DATA-004" "No REVIEW task"
 
@@ -198,7 +198,7 @@ if [ -n "$REV_REJECT" ]; then
   http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d "{\"event":"ASSIGN","agentId":"$AGENT_ID"}" "$BASE/api/tasks/$REV_REJECT/transition" > /dev/null
   http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"STEP_COMPLETE"}' "$BASE/api/tasks/$REV_REJECT/transition" > /dev/null
   r2=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"REJECT"}' "$BASE/api/tasks/$REV_REJECT/transition")
-  if echo "$r2" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='IN_PROGRESS'" 2>/dev/null; then
+  if echo "$r2" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get("to")=="IN_PROGRESS"' 2>/dev/null; then
     report PASS "DATA-005" "REVIEW→IN_PROGRESS REJECT"
   else
     report FAIL "DATA-005" "REJECT failed: $r2"
@@ -210,14 +210,14 @@ fi
 FAILED_T=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='FAILED' LIMIT 1")
 [ -n "$FAILED_T" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"RETRY"}' "$BASE/api/tasks/$FAILED_T/transition")
-  echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='QUEUED'" 2>/dev/null && \
+  echo "$r" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get(\"to\")==\"QUEUED\"' 2>/dev/null && \
     report PASS "DATA-007" "FAILED→QUEUED RETRY" || report FAIL "DATA-007" "RETRY failed: $r"
 } || report SKIP "DATA-007" "No FAILED task"
 
 BLOCKED_T=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='BLOCKED' LIMIT 1")
 [ -n "$BLOCKED_T" ] && {
   r=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"event":"UNBLOCK"}' "$BASE/api/tasks/$BLOCKED_T/transition")
-  echo "$r" | python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('to')=='QUEUED'" 2>/dev/null && \
+  echo "$r" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get(\"to\")==\"QUEUED\"' 2>/dev/null && \
     report PASS "DATA-008" "BLOCKED→QUEUED UNBLOCK" || report FAIL "DATA-008" "UNBLOCK failed: $r"
 } || report SKIP "DATA-008" "No BLOCKED task"
 
@@ -243,18 +243,18 @@ Q2_TASK=$(sqlite3 "$QUAY_DB_PATH" "SELECT id FROM tasks WHERE state='QUEUED' LIM
 for policy in FAIR_SHARE STRICT_PRIORITY SHORTEST_JOB_FIRST; do
   t=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" \
     -d "{\"title\":\"$policy test\",\"schedulingPolicy\":\"$policy\"}" "$BASE/api/projects/$PROJECT_ID/tasks")
-  echo "$t" | python3 -c "import sys,json; d=json.load(sys.stdin); assert 'id' in d" 2>/dev/null && \
+  echo "$t" | python3 -c "import sys,json; d=json.load(sys.stdin); assert isinstance(d.get("id"), str" 2>/dev/null && \
     report PASS "DATA-014/015/016" "schedulingPolicy=$policy → accepted" || report FAIL "DATA-014/015/016" "policy=$policy failed"
   break
 done
 
 # Priority boundary
 t_p1=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"title":"P1","priority":1}' "$BASE/api/projects/$PROJECT_ID/tasks")
-echo "$t_p1" | python3 -c "import sys,json; d=json.load(sys.stdin); assert 'id' in d" 2>/dev/null && \
+echo "$t_p1" | python3 -c "import sys,json; d=json.load(sys.stdin); assert isinstance(d.get("id"), str" 2>/dev/null && \
   report PASS "DATA-012" "Create task priority=1 → accepted" || report FAIL "DATA-012" "priority=1 failed"
 
 t_p10=$(http_body -X POST -H "$AUTH" -H "Content-Type: application/json" -d '{"title":"P10","priority":10}' "$BASE/api/projects/$PROJECT_ID/tasks")
-echo "$t_p10" | python3 -c "import sys,json; d=json.load(sys.stdin); assert 'id' in d" 2>/dev/null && \
+echo "$t_p10" | python3 -c "import sys,json; d=json.load(sys.stdin); assert isinstance(d.get("id"), str" 2>/dev/null && \
   report PASS "DATA-013" "Create task priority=10 → accepted" || report FAIL "DATA-013" "priority=10 failed"
 
 # completed_at on DONE
