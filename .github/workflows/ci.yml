@@ -29,7 +29,7 @@ jobs:
           QUAY_API_KEY: quay-dev-key
 
       - name: Run test suite
-        run: bash scripts/test-quay.sh
+        run: bun test
 
   typecheck:
     name: TypeScript Check
