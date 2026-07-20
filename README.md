@@ -307,6 +307,90 @@ BLOCKED ← (can block from REVIEW)
 
 ---
 
+## 🤖 Marketic MCP Integration
+
+Quay integrates with **Marketic** (Marketing Intelligence OS) as a native MCP tool provider, enabling autonomous marketing pipelines alongside code agents.
+
+### Architecture
+
+```
+Quay Mission Control Dashboard
+         ↓
+   Agent Runner
+         ↓
+   MCP Registry
+         ↓
+Marketic MCP Server ←→ Marketing Intelligence Tools
+                            ↓
+    ┌───────────────────────┼───────────────────────┐
+    ↓                       ↓                       ↓
+Competitive Analysis   Creative Generation    Campaign Management
+(analyze_competitor)   (generate_creatives)   (build_campaign)
+(compare_competitors)  (generate_social)     (optimize_budget)
+(analyze_positioning)  (generate_seo)       (launch_campaign)
+                         ↓
+              Analytics & Attribution
+              (get_attribution)
+              (collect_signals)
+```
+
+### Available Marketing Tools
+
+| Category | Tools | Description |
+|----------|-------|-------------|
+| **Competitive Analysis** | `analyze_competitor`, `compare_competitors`, `analyze_positioning` | Deep-dive competitor research and positioning |
+| **Creative Generation** | `generate_creatives`, `generate_social_posts`, `generate_seo_content`, `generate_narrative` | Ad copy, social content, SEO articles |
+| **Campaign Management** | `build_campaign`, `optimize_budget`, `launch_campaign_ad` | Multi-channel campaign planning and optimization |
+| **Analytics** | `get_attribution`, `collect_signals` | Attribution modeling and market intelligence |
+| **Hub Connectors** | `hub_*` (9 tools) | WebEngage, HubSpot, CleverTap, Braze, Mailchimp integration |
+| **CRM** | `crm_*` (8 tools) | Lead/deal management, activity logging |
+
+### API Routes
+
+| Method | Path | Tool | Description |
+|--------|------|------|-------------|
+| `POST` | `/api/marketing/analyze` | `marketic::analyze_competitor` | Competitor analysis |
+| `POST` | `/api/marketing/creatives` | `marketic::generate_creatives` | Ad creative generation |
+| `POST` | `/api/marketing/campaign` | `marketic::build_campaign` / `launch_campaign_ad` | Campaign build/launch |
+| `POST` | `/api/marketing/signals` | `marketic::collect_signals` | Market intelligence |
+| `POST` | `/api/marketing/performance` | `marketic::get_attribution` | Attribution analysis |
+
+### Quick Test
+
+```bash
+# Analyze a competitor
+curl -X POST http://localhost:3001/api/marketing/analyze \
+  -H "Authorization: Bearer quay-dev-key" \
+  -H "Content-Type: application/json" \
+  -d '{"brand": "HubSpot", "category": "marketing automation"}'
+
+# Generate campaign creatives
+curl -X POST http://localhost:3001/api/marketing/creatives \
+  -H "Authorization: Bearer quay-dev-key" \
+  -H "Content-Type: application/json" \
+  -d '{"competitor": "Quay AI Factory", "count": 5}'
+```
+
+### Dashboard
+
+The Marketing Intelligence dashboard is available at `/marketing` with:
+- Competitor analysis interface
+- Creative generator
+- Campaign builder
+- Market signals feed
+- Performance attribution
+
+### Integration Tests
+
+```bash
+cd quay
+npm test -- tests/integration/
+# 67 tests: 43 Marketic MCP + 24 API route contracts
+```
+
+**Note:** Marketic MCP server must be running for marketing tools to function. See [Marketic](https://github.com/Das-rebel/marketic) for setup instructions.
+---
+
 ## 📦 Tech Stack
 
 | Layer | Technology |
@@ -324,7 +408,8 @@ BLOCKED ← (can block from REVIEW)
 
 ## 📈 Roadmap
 
-- [ ] **v0.2** — MCP server registry UI in Mission Control
+- [x] **v0.2** — MCP server registry UI in Mission Control (MCP tools via `/api/mcp/tools`)
+- [x] **v0.2.1** — Marketic MCP integration (32 marketing intelligence tools)
 - [ ] **v0.3** — GitHub/GitLab webhook triggers for automatic task creation
 - [ ] **v0.4** — Docker sandbox execution for agent isolation
 - [ ] **v0.5** — Kubernetes operator for multi-tenant deployment
