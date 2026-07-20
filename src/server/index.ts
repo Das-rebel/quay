@@ -11,6 +11,7 @@ import { mcpRegistry } from './mcp/index.js';
 import { sseBroadcaster } from './sse/index.js';
 import { pipelineExecutor, PIPELINE_TEMPLATES } from './pipeline/pipeline.js';
 import { memoryTree } from './memory/memoryTree.js';
+import { MARKETIC_MCP_CONFIG } from './marketing/config.js';
 import type { Task, Agent, Run, TaskState, TaskEvent } from '../lib/types/index.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -343,6 +344,99 @@ app.get('/api/mcp/tools', async (c) => {
   return c.json(tools);
 });
 
+// ── Marketing Intelligence Routes ──────────────────────────────
+
+// POST /api/marketing/analyze
+app.post('/api/marketing/analyze', async (c) => {
+  const { brand, days } = await c.req.json().catch(() => ({}));
+  if (!brand || typeof brand !== 'string') {
+    return c.json({ error: 'Field "brand" (string) is required' }, 400);
+  }
+  const args: Record<string, unknown> = { brand };
+  if (typeof days === 'number' && days > 0) args.days = days;
+  try {
+    const result = await mcpRegistry.routeTool('marketic::analyze_competitor', args);
+    if (!result.success) return c.json({ error: result.error ?? 'Analysis failed', tool: result.tool }, 502);
+    return c.json(result.result);
+  } catch (err) {
+    return c.json({ error: 'Failed to call marketic::analyze_competitor', detail: String(err) }, 500);
+  }
+});
+
+// POST /api/marketing/creatives
+app.post('/api/marketing/creatives', async (c) => {
+  const { competitor, count } = await c.req.json().catch(() => ({}));
+  if (!competitor || typeof competitor !== 'string') {
+    return c.json({ error: 'Field "competitor" (string) is required' }, 400);
+  }
+  try {
+    const result = await mcpRegistry.routeTool('marketic::generate_creatives', {
+      product_name: competitor,
+      product_description: competitor,
+      num_variants: typeof count === 'number' ? count : 3,
+    });
+    if (!result.success) return c.json({ error: result.error ?? 'Creative generation failed', tool: result.tool }, 502);
+    return c.json(result.result);
+  } catch (err) {
+    return c.json({ error: 'Failed to call marketic::generate_creatives', detail: String(err) }, 500);
+  }
+});
+
+// POST /api/marketing/campaign
+app.post('/api/marketing/campaign', async (c) => {
+  const body = await c.req.json().catch(() => ({}));
+  const { action } = body;
+  if (!action || !['build', 'launch'].includes(action)) {
+    return c.json({ error: 'Field "action" must be "build" or "launch"' }, 400);
+  }
+  const toolName = action === 'build' ? 'marketic::build_campaign' : 'marketic::launch_campaign_ad';
+  const { campaign_name, objective, channels, duration_weeks, total_budget } = body;
+  try {
+    const args: Record<string, unknown> = {};
+    if (campaign_name) args.campaign_name = campaign_name;
+    if (objective) args.objective = objective;
+    if (channels) args.channels = channels;
+    if (duration_weeks) args.duration_weeks = duration_weeks;
+    if (total_budget) args.total_budget = total_budget;
+    const result = await mcpRegistry.routeTool(toolName, args);
+    if (!result.success) return c.json({ error: result.error ?? `Campaign ${action} failed`, tool: result.tool }, 502);
+    return c.json(result.result);
+  } catch (err) {
+    return c.json({ error: `Failed to call ${toolName}`, detail: String(err) }, 500);
+  }
+});
+
+// POST /api/marketing/signals
+app.post('/api/marketing/signals', async (c) => {
+  const { competitor, days } = await c.req.json().catch(() => ({}));
+  try {
+    const result = await mcpRegistry.routeTool('marketic::collect_signals', {
+      brand: competitor ?? 'Quay',
+      days: typeof days === 'number' ? days : 7,
+    });
+    if (!result.success) return c.json({ error: result.error ?? 'Signal collection failed', tool: result.tool }, 502);
+    return c.json(result.result);
+  } catch (err) {
+    return c.json({ error: 'Failed to call marketic::collect_signals', detail: String(err) }, 500);
+  }
+});
+
+// POST /api/marketing/performance
+app.post('/api/marketing/performance', async (c) => {
+  const body = await c.req.json().catch(() => ({}));
+  const { channel_points, model } = body;
+  try {
+    const result = await mcpRegistry.routeTool('marketic::get_attribution', {
+      channel_points: channel_points ?? [],
+      model: model ?? 'linear',
+    });
+    if (!result.success) return c.json({ error: result.error ?? 'Attribution analysis failed', tool: result.tool }, 502);
+    return c.json(result.result);
+  } catch (err) {
+    return c.json({ error: 'Failed to call marketic::get_attribution', detail: String(err) }, 500);
+  }
+});
+
 // ── SSE Test ───────────────────────────────────────────────────
 // Protected: only allowed in dev mode or with valid API key
 app.post('/api/test-event', async (c) => {
@@ -366,15 +460,21 @@ app.notFound((c) => c.json({ error: 'Not found' }, 404));
 async function start() {
   const PORT = parseInt(process.env.QUAY_PORT ?? '3001');
 
-  // MCP servers start on-demand (lazy) — skip auto-start for MVP
-  console.log('[Quay] MCP: lazy-loading on first tool call (configure in QUAY_MCP_SERVERS env)');
+  // Register Marketic MCP server for marketing intelligence
+  console.log('[Quay] MCP: registering Marketic marketing intelligence...');
+  try {
+    await mcpRegistry.register(MARKETIC_MCP_CONFIG);
+  } catch (e) {
+    console.warn('[Quay] MCP: Marketic failed to start (marketing tools unavailable):', e);
+  }
+
+  console.log(`[Quay] MCP servers: ${mcpRegistry.getAllServers().length} running`);
 
   Bun.serve({ port: PORT, fetch: app.fetch });
 
   console.log(`[Quay] ✓ Listening on http://localhost:${PORT}`);
   console.log(`[Quay] Health: http://localhost:${PORT}/health`);
   console.log(`[Quay] API key: ${API_KEY === 'quay-dev-key' ? '(dev mode)' : '(custom)'}`);
-  console.log(`[Quay] MCP servers: ${mcpRegistry.getAllServers().length} running`);
   console.log(`[Quay] Dashboard: http://localhost:${PORT}/`);
 }
 
