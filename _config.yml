@@ -1,0 +1,47 @@
+# Jekyll configuration — this repo uses SvelteKit, not Jekyll
+# Legacy Pages build requires some Jekyll config
+title: Quay AI Factory
+description: Self-hosted AI agents with marketing intelligence
+theme: minima
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: true
+exclude:
+  - node_modules
+  - .svelte-kit
+  - package.json
+  - package-lock.json
+  - bun.lock
+  - tsconfig.json
+  - vite.config.ts
+  - svelte.config.js
+  - src
+  - scripts
+  - tests
+  - drizzle.config.ts
+  - vitest.config.ts
+  - marketic_memory.db
+  - .env
+  - .npmrc
+  - .vscode
+  - job_pipeline
+  - docs
+  - public
+  - .github
+  - CHANGELOG.md
+  - CONTRIBUTING.md
+  - INTEGRATION.md
+  - PRESS_RELEASE.md
+  - SOCIAL.md
+  - SUBMISSIONS.md
+  - discoverability-diagnosis.md
+  - llms.txt
+  - llms-full.txt
+  - *.ts
+  - *.js
+  - *.svelte
+  - LICENSE
+include: []
+keep_files: []
+destination: .jekyll
