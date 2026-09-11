@@ -29,7 +29,16 @@ jobs:
           QUAY_API_KEY: quay-dev-key
 
       - name: Run test suite
-        run: bun test
+        run: |
+          # Run unit tests always
+          bun test src/lib/__tests__/
+          bun test tests/integration/marketing-api.test.ts
+          # Run Marketic integration tests only if API keys are configured
+          if [ -n "${{ secrets.MARKETIC_API_KEY }}" ]; then
+            bun test tests/integration/marketic-integration.test.ts
+          else
+            echo "Skipping Marketic integration tests (MARKETIC_API_KEY not set in CI)"
+          fi
 
   typecheck:
     name: TypeScript Check
