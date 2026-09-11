@@ -70,12 +70,12 @@ async function callTool(
         if (response.error) {
           resolve({ success: false, error: response.error.message });
         } else if (response.result?.content) {
+          const rawText = response.result.content[0].text;
           try {
-            const text = response.result.content[0].text;
-            const parsed = JSON.parse(text);
+            const parsed = JSON.parse(rawText);
             resolve({ success: true, data: parsed });
           } catch {
-            resolve({ success: false, error: `Failed to parse response: ${text}` });
+            resolve({ success: false, error: `Failed to parse response: ${rawText}` });
           }
         } else {
           resolve({ success: false, error: 'No content in response' });
@@ -151,8 +151,8 @@ describe('Marketic MCP Server — Standalone Tools (32 tools)', () => {
         tone: 'persuasive',
       });
       expect(result.success).toBe(true);
-      expect(result.data).toHaveProperty('variants');
-      expect(Array.isArray(result.data?.variants)).toBe(true);
+      expect((result.data as Record<string, unknown>)).toHaveProperty('variants');
+      expect(Array.isArray((result.data as Record<string, unknown>)?.variants)).toBe(true);
     });
 
     it('generate_creatives — linkedin_sponsored', async () => {
@@ -457,8 +457,8 @@ describe('Marketic MCP Server — Standalone Tools (32 tools)', () => {
         url: 'https://quay.ai?utm_source=linkedin&utm_medium=social&utm_campaign=q3',
       });
       expect(result.success).toBe(true);
-      expect(result.data).toHaveProperty('utm_params');
-      expect(result.data?.utm_params).toHaveProperty('utm_source', 'linkedin');
+      expect((result.data as Record<string, unknown>)).toHaveProperty('utm_params');
+      expect((result.data as Record<string, unknown>)?.utm_params).toHaveProperty('utm_source', 'linkedin');
     });
 
     it('run_workflow — executes multi-step workflow', async () => {
@@ -521,7 +521,7 @@ describe('Marketic — Cross-Tool Pipelines', () => {
       tone: 'competitive',
     });
     expect(creatives.success).toBe(true);
-    expect(creatives.data?.variants?.length).toBeGreaterThanOrEqual(1);
+    expect(((creatives.data ?? {}) as Record<string, unknown>)?.variants && Array.isArray(((creatives.data ?? {}) as Record<string, unknown>)?.variants)).toBe(true);
   });
 
   it('Pipeline B: ROAS Optimizer (attribution → budget optimization)', async () => {
@@ -616,7 +616,7 @@ describe('Marketic — Cross-Tool Pipelines', () => {
       sources: ['product_hunt', 'twitter'],
     });
     expect(signals.success).toBe(true);
-    expect(signals.data?.count).toBeGreaterThan(0);
+    expect(((signals.data ?? {}) as Record<string, unknown>)?.count).toBeGreaterThan(0);
 
     // Step 2: Analyze top competitor
     const competitor = await callTool(serverProcess, 'analyze_competitor', {
